@@ -1,0 +1,25 @@
+package nope;
+
+public class Année {
+int year=2000;
+	
+	public static void main(String[] args) {
+
+	}
+
+	public Année() {
+		
+	  }
+	public Année(int year) {
+		if((year%4==0 && year%100!=0)||(year%400==0)){
+			System.out.println("L'année "+ year +
+					" est bisextile");
+		}
+		else {
+			System.out.println("L'année "+ year +
+					" est non bisextile");
+		}
+		 
+	  }
+	
+}

@@ -1,0 +1,10 @@
+package nope;
+
+public class semaine {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

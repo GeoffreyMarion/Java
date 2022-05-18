@@ -1,0 +1,21 @@
+package nope;
+
+import java.util.*;
+
+public class Palindrome {
+
+	public static void main(String[] args) {
+	Scanner sc = new Scanner(System.in);
+	String mot=sc.next();
+	}
+	StringBuilder str = new StringBuilder("hello");
+	str.insert(1,mot);
+	StringBuilder rev = new StringBuilder());
+	rev=str.reverse();
+	if(str=rev) {
+		System.out.println("Palindrome");
+	}
+	else {
+		System.out.println("pas Palindrome");
+	}
+}
