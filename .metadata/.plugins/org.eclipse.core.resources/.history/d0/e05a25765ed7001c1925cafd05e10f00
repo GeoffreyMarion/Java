@@ -1,0 +1,35 @@
+package Exo2;
+
+import java.util.Iterator;
+
+import Exo1.Livre;
+
+public class test {
+
+	public static void main(String[] args) {
+		enseignant enseignant1 = new enseignant("JAVA/JEE");
+		enseignant enseignant2 = new enseignant("JAVA/JEE");
+		enseignant enseignant3 = new enseignant("PHP");
+		enseignant enseignant4 = new enseignant("JS");
+		
+		Specialite Cours1 = new Specialite("JAVA/JEE");
+		Specialite Cours2 = new Specialite("HTML/CSS");
+		Specialite Cours3 = new Specialite("Gestion de projet");
+		Specialite Cours4 = new Specialite("JS");
+		Specialite Cours5 = new Specialite("PHP");
+		
+		for (int i = 1; i < 6; i++) {
+			String print="";
+			for(int j=1;j<5;j++) {
+				//if(("enseignant"+j).getSpecialite()==("Cours"+i).getNom()) {
+				
+				if(enseignant1.getSpecialite() == Cours1.getNom()) {
+					
+				print+="enseignant"+j+",";
+				}
+				System.out.println("-----------\n"+(Cours1.getNom()+":"+print));
+			}
+		}
+	}
+
+}

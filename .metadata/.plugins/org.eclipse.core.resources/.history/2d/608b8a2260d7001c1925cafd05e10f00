@@ -1,0 +1,20 @@
+package Exo2;
+
+public class enseignant {
+	private int id;
+	private String specialite;
+	
+	public enseignant(String specialite) {
+		super();
+		this.specialite = specialite;
+	}
+
+	public String getSpecialite() {
+		return specialite;
+	}
+
+	@Override
+	public String toString() {
+		return "enseignant [specialite=" + specialite + "]";
+	}
+}
