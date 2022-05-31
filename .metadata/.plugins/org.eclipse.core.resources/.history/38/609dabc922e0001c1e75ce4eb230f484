@@ -1,0 +1,10 @@
+package Heritage;
+
+public class TestHeritage {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

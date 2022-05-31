@@ -1,0 +1,51 @@
+package Vehicule;
+
+public class Vehicule{
+	protected int Roues;
+	protected String Carburant;
+	protected int Vitesse_max;
+	protected int contenanceReservoir;
+	protected int contenuRersevoir;
+
+	protected int Nbr_roues() {
+		return 0;
+	}
+	protected String T_carb() {
+		return "Diesel";
+	}
+	protected int V_max() {
+		return 500;
+	}
+	protected void fairePlein(Pompe Pompe) {
+		int reste=Pompe.getContenu();
+		int remplir=0;
+		if(this.Carburant==Pompe.getTypeCarburant()) {
+		remplir=this.contenanceReservoir-this.contenuRersevoir;
+		System.out.println("Bon carburant à la pompe");
+			if(Pompe.getContenu()>=remplir) {
+				this.contenuRersevoir=this.contenanceReservoir;
+				reste=Pompe.getContenu()-remplir;
+				System.out.println("Contenu pompe suffisant");
+				System.out.println("Vous avez rempli " + remplir +"L ,vous avez mainteant "+this.contenuRersevoir+"L de carburant et il reste "+ Pompe.getContenu()+ "L dans la pompe \n");
+			}
+			else {
+				System.out.println("Contenu Pompe insuffisant \n");
+			}
+		}
+		else {
+			System.out.println("Mauvais carburant à la pompe \n");
+		}
+		Pompe.setContenu(reste);
+		return;
+	}
+	public Vehicule(int roues, String carburant, int vitesse_max,int contenancereservoir,int contenurersevoir) {
+		super();
+		Roues = roues;
+		Carburant = carburant;
+		Vitesse_max = vitesse_max;
+		contenanceReservoir = contenancereservoir;
+		contenuRersevoir = contenurersevoir;
+	}
+	
+}
+
