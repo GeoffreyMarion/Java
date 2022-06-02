@@ -11,8 +11,9 @@ import modele.Client;
 public class CRUDclient {
 	private String Email="";
 	Connection connection = new Database().getConnection();
+	private boolean trouve=false;
 	
-	public Client create() {
+	public void create() {
 		Scanner scpre = new Scanner(System.in);
 		Scanner scnom = new Scanner(System.in);
 		Scanner scmail = new Scanner(System.in);
@@ -22,11 +23,6 @@ public class CRUDclient {
 		String tname=scnom.nextLine();
 		System.out.println("Email:");
 		String temail=scmail.nextLine();
-		
-		Client client = new Client();
-		client.setPrenom(tprenom);
-		client.setNom(tname);
-		client.setEmail(temail);
 
 		try {
 			readmailarg(temail);
@@ -39,7 +35,6 @@ public class CRUDclient {
 			System.out.println("Données non crées");
 			e.printStackTrace();
 		}
-		return client;
 	}
 
 	public String readmail() {
@@ -57,13 +52,15 @@ public class CRUDclient {
 				String Nom = afficher.getString("Nom");
 				mail = afficher.getString("Email");
 				System.err.println("----------------\nPrenom: "+Prenom+"\nNom: "+Nom+"\nEmail: "+mail+"\n----------------");
+				trouve=true;
 			}
 		} catch (SQLException e) {
 			System.out.println("Données non lues");
 			e.printStackTrace();
 		}
 		Email=mail;
-		if(Email==""){System.err.println(temail+"ne se trouve pas dans la base de données\n----------------");}
+		if(Email==""){System.err.println(temail+" ne se trouve pas dans la base de données\n----------------");
+		trouve=false;}
 		return Email;
 	}
 	
@@ -110,7 +107,7 @@ public class CRUDclient {
 		Scanner scmail = new Scanner(System.in);
 		
 		readmail();
-		
+		if(trouve==true) {
 		System.out.println("Nouveau Prénom:");
 		String tprenom=scpre.nextLine();
 		System.out.println("Nouveau Nom:");
@@ -118,13 +115,17 @@ public class CRUDclient {
 		System.out.println("Nouvel Email:");
 		String temail=scmail.nextLine();
 		try {
+			
 			Statement statement = connection.createStatement();
 			statement.executeUpdate("UPDATE Client SET Prenom='"+tprenom+"',Nom='"+tname+"',Email='"+temail+ "'WHERE Email LIKE '"+Email+"'");
+			
 		} catch (SQLException e) {
 			System.out.println("Update non fait");
 			e.printStackTrace();
 		}
-		readmailarg(temail);
+		
+		readmailarg(temail);}
+		else {System.out.println("Update non fait mail non présent dans la base");}
 	}
 	
 	public void delete() {
