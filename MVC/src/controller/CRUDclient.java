@@ -13,16 +13,13 @@ public class CRUDclient {
 	Connection connection = new Database().getConnection();
 	private boolean trouve=false;
 	
-	public void create() {
-		Scanner scpre = new Scanner(System.in);
-		Scanner scnom = new Scanner(System.in);
-		Scanner scmail = new Scanner(System.in);
+	public void create(Scanner scan) {
 		System.out.println("Saisir Prénom:");
-		String tprenom=scpre.nextLine();
+		String tprenom=scan.nextLine();
 		System.out.println("Saisir Nom:");
-		String tname=scnom.nextLine();
+		String tname=scan.nextLine();
 		System.out.println("Email:");
-		String temail=scmail.nextLine();
+		String temail=scan.nextLine();
 
 		try {
 			readmailarg(temail);
