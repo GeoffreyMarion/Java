@@ -5,11 +5,16 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Arme{
-	
-	private String noma;
+	Random rf = new Random();
+	private int maxf=5;
+	private int minf=1;
+	int pow= rf.nextInt(maxf-minf+1) + minf;
+	int pow2= rf.nextInt(maxf-minf+1) + minf;
+	int pow3= rf.nextInt(maxf-minf+1) + minf;
 	private TypeArme typea=giveArme();
-	private int pow;
-	Scanner scw = new Scanner(System.in);
+	private int vio;
+	private int pre;
+	private int dex;
 	
 	public ArrayList<Arme> armes = new ArrayList<Arme>();
 	
@@ -19,52 +24,62 @@ public class Arme{
 	return arm;
 	}
 	
-	public Arme(String nomar) {
-		this.noma = nomar;
-		switch(typea){
-		case pistolet:
-			pow=5;
-			break;
-		case épée:
-			pow=4;
-			break;
-		case masse:
-			pow=3;
-			break;
-		case couteau:
-			pow=2;
-			break;
-		case désarmé:
-			pow=1;
-			this.noma="mains";
-			break;
-		}
+	public Arme() {
+		stat_arme();
 		armes.add(this);
 	}
 	
-	public String getNoma() {
-		return noma;
+	public void setTypea(TypeArme typea) {
+		this.typea = typea;
 	}
-	public int getPow() {
-		return pow;
+	public TypeArme getTypea() {
+		return typea;
 	}
-	
-	public void printarme() {
-		for (Arme arme : armes) {System.out.println("\t "+noma+" "+typea+" "+pow);}	
+	public int getVio() {
+		return vio;
 	}
-	public Arme testarme() {
-		String sarme = scw.nextLine();
-		for (Arme arme : armes) if(arme.noma==sarme){System.out.println(arme.noma); return arme;}
-		return null;	
+	public int getPre() {
+		return pre;
 	}
-
+	public int getDex() {
+		return dex;
+	}
+	public void stat_arme() {
+		switch(typea){
+		case pistolet:
+			vio=2+pow;
+			pre=3+pow2;
+			dex=1+pow3;
+			break;
+		case épée:
+			vio=2+pow;
+			pre=2+pow2;
+			dex=2+pow3;
+			break;
+		case masse:
+			vio=3+pow;
+			pre=1+pow2;
+			dex=2+pow3;
+			break;
+		case couteau:
+			vio=1+pow;
+			pre=2+pow2;
+			dex=3+pow3;
+			break;
+		case désarmé:
+			vio=1+pow;
+			pre=1+pow2;
+			dex=1+pow3;
+			break;
+		}
+	}
 
 	@Override
 	public String toString() {
-		if (this.noma=="mains") {
-			return "Arme \n\tNom_Arme= " + noma;
+		if (this.typea==TypeArme.désarmé) {
+			return "Arme="+ typea;
 		}
-		else {return "Arme \n\tNom_Arme= " + noma + ", Type_Arme= " + typea + ", Puissance= " + pow;}
+		else {return "Arme="+ typea + " | Violence= " + vio+ " | Précision= " + pre+ " | Dextérité= " + dex;}
 	}
 
 }
