@@ -5,17 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
-import javax.swing.JPasswordField;
-
-import vue.Windowform;
 import DAO.Database;
 import DAO.iDAO;
 import modele.User;
 
 public class UserDao implements iDAO<User> {
-	Connection connection = new Database().getConnection();
+	Connection connection = Database.getConnection();
 	
 	public boolean create(User objet) {
 		try {
@@ -98,7 +94,7 @@ public class UserDao implements iDAO<User> {
 	public User findById(int id) {
 		ResultSet afficher=null;
 		try {
-			PreparedStatement statement = connection.prepareStatement("SELECT* FROM User WHERE id LIKE ?");
+			PreparedStatement statement = connection.prepareStatement("SELECT* FROM User WHERE id=?");
 			statement.setInt(1,id);
 			afficher=statement.executeQuery();
 			while (afficher.next()) {
@@ -119,7 +115,6 @@ public class UserDao implements iDAO<User> {
 		return null;
 	}
 
-	@Override
 	public User findByEmail(String email) {
 		ResultSet afficher=null;
 		
@@ -146,13 +141,13 @@ public class UserDao implements iDAO<User> {
 	}
 
 	@Override
-	public ArrayList<User> findByNom(String prenom) {
+	public ArrayList<User> findByNom(String nom) {
 		ResultSet afficher=null;
 		ArrayList<User> Users= new ArrayList<>();
 		
 		try {
 			PreparedStatement statement = connection.prepareStatement("SELECT* FROM User WHERE nom LIKE ?");
-			statement.setString(1,prenom);
+			statement.setString(1,nom);
 			afficher=statement.executeQuery();
 			while (afficher.next()) {
 				User user=new User(afficher.getString("nom"),afficher.getString("prenom"),afficher.getString("pwd"),afficher.getString("email"),afficher.getString("tel"));
@@ -163,7 +158,7 @@ public class UserDao implements iDAO<User> {
 			System.out.println("Données non lues");
 			e.printStackTrace();
 		}
-		if(afficher==null){System.err.println(prenom+" ne se trouve pas dans la base de données\n----------------");
+		if(afficher==null){System.err.println(nom+" ne se trouve pas dans la base de données\n----------------");
 		}
 		return null;
 	}
@@ -174,22 +169,13 @@ public class UserDao implements iDAO<User> {
 			statement.setString(1,email);
 			statement.setString(2,pass);
 			afficher=statement.executeQuery();
-			/*while (afficher.next()) {
-				String nom = afficher.getString("nom");
-				String prenom = afficher.getString("prenom");
-				String pwd = afficher.getString("pwd");
-				String mail = afficher.getString("email");
-				String tel = afficher.getString("tel");
-				User user= new User(nom,prenom,pwd,mail,tel);*/
-			if(afficher.isBeforeFirst()) {
+			if(afficher.next()) {
 				return true;
 			}
 		} catch (SQLException e) {
 			System.out.println("Données non lues");
 			e.printStackTrace();
 		}
-		//if(afficher==null){System.err.println(email+" ne se trouve pas dans la base de données\n----------------");
-		//}
 		return false;
 	}
 

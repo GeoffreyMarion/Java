@@ -8,6 +8,5 @@ public interface iDAO <T> {
 	public T update(T object);
 	public boolean delete(T object);
 	public T findById(int id);
-	public T findByEmail(String email);
 	public ArrayList<T> findByNom(String nom);
 }
