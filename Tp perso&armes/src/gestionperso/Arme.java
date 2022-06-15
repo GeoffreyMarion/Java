@@ -73,7 +73,30 @@ public class Arme{
 			break;
 		}
 	}
-
+	public void desarmer() {
+		int rand= rf.nextInt(10-1) + 1;
+		if (rand==10) {
+			ennemi.arme.typea=désarmé;
+		}
+	}
+	public void assomer() {
+		int rand= rf.nextInt(10-1) + 1;
+		if (rand==10) {
+			ennemi.force-=1;
+		}
+	}
+	public void percer() {
+		int rand= rf.nextInt(10-1) + 1;
+		if (rand==10) {
+			ennemi.defense-=1;
+		}
+	}
+	public void critique() {
+		int rand= rf.nextInt(10-1) + 1;
+		if (rand==10) {
+			wound+=1;
+		}
+	}
 	@Override
 	public String toString() {
 		if (this.typea==TypeArme.désarmé) {

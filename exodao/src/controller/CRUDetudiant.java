@@ -13,7 +13,7 @@ import modele.Etudiant;
 
 public class CRUDetudiant implements Idao<Etudiant>{
 	private String Email="";
-	Connection connection = new Database().getConnection();
+	Connection connection = Database.getConnection();
 	
 	@Override
 	public boolean create(Etudiant etu) {
