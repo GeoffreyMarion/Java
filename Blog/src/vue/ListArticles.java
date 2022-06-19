@@ -4,10 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -15,13 +12,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
-
 import controller.ArticleDao;
-import controller.UserDao;
 import modele.Article;
 
 public class ListArticles extends JPanel{
-	JPanel content;
+	private JPanel content;
+	static Article article=null;
+	static String contenu=null;
 	int article_id=0;
 	
 	public JPanel larticles() {
@@ -47,20 +44,9 @@ public class ListArticles extends JPanel{
 		JTable tarticle = new JTable(null, columnNames);
 		tarticle.setBounds(0, 0, 465, 340);
 		scrollg.add(tarticle);
-
 		scrollg.setViewportView(tarticle);
-		
-		tarticle.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int id = tarticle.getSelectedRow();
-				
-				article_id = (int) tarticle.getModel().getValueAt(id, 0);
-			}
-			
-			
-		});
 		tarticle.setModel(liste());
+		
 		TableColumnModel mtarticle = tarticle.getColumnModel();
 		mtarticle.getColumn(0).setPreferredWidth(25);
 		mtarticle.getColumn(1).setPreferredWidth(120);
@@ -79,38 +65,69 @@ public class ListArticles extends JPanel{
 		lire.setBounds(90, 5, 90, 25);
 		lire.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				UserDao us = new UserDao();
-				if (tarticle.getSelectionModel().isSelectionEmpty()) {
+				ArticleDao art = new ArticleDao();
+				//if (tarticle.getSelectionModel().isSelectionEmpty()==false) {
+				if (tarticle.getSelectedRow()!=1000000) {
+						int id = tarticle.getSelectedRow();
+						article_id = (int) tarticle.getModel().getValueAt(id, 0);
+						article=art.findById(article_id);
+						contenu=article.getContenu();
 						Mainframe.layer.removeAll();
-						Readart art = new Readart();
-						Mainframe.layer.add(art.read());
-						Mainframe.Titrepage.setText("Lecture d'article par "+Mainframe.Fprenom.getText()+"");
+						Readart arti = new Readart();
+						Mainframe.layer.add(arti.read_art());
+						Mainframe.Titrepage.setText("Lecture d'article par "+Mainframe.user.getPrenom()+"");
 				}
-				else { JOptionPane.showMessageDialog(lire, "Mail ou mot de pass erroné");} 
+				else { JOptionPane.showMessageDialog(lire, "pas d'article selectionnÃ©");} 
 			}
 		});
 		contenubas.add(lire);
 		
 		JButton ecrire = new JButton("Ecrire");
 		ecrire.setFont(new Font("Agency FB", Font.PLAIN, 15));
-		ecrire.setBounds(180, 5, 90, 25);
+		ecrire.setBounds(200, 5, 90, 25);
 		ecrire.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Mainframe.layer.removeAll();
 				Writeart art = new Writeart();
 				Mainframe.layer.add(art.write());
-				Mainframe.Titrepage.setText("Nouvel article de " + Mainframe.Fprenom.getText() + "");
+				Mainframe.Titrepage.setText("Nouvel article de " + Mainframe.user.getPrenom()+ "");
 
 			}
 		});
-		contenubas.add(lire);
+		contenubas.add(ecrire);
+		
+		JButton supprimer = new JButton("Supprimer");
+		supprimer.setFont(new Font("Agency FB", Font.PLAIN, 15));
+		supprimer.setBounds(300, 5, 90, 25);
+		supprimer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (tarticle.getSelectedRow() != 1000000) {
+					int id = tarticle.getSelectedRow();
+					article_id = (int) tarticle.getModel().getValueAt(id, 0);
+					ArticleDao artD = new ArticleDao();
+					article = artD.findById(article_id);
+					if ((article.getAuteur()).equalsIgnoreCase(Mainframe.user.getPrenom())) {
+						artD.delete(article);
+						JOptionPane.showMessageDialog(lire, "Article supprimÃ©");
+						Mainframe.layer.removeAll();
+						ListArticles art = new ListArticles();
+						Mainframe.layer.add(art.larticles());
+					} else {
+						JOptionPane.showMessageDialog(lire, "Vous n'Ãªtes pas l'Auteur");
+					}
+				} else {
+					JOptionPane.showMessageDialog(lire, "Pas d'article selectionnÃ©");
+				}
+			}
+		});
+		contenubas.add(supprimer);
 		
 		return content;
 	}
 
 	public DefaultTableModel liste() {
 
-		String[] col = { "ID", "Titre", "Résumé", "Date création", "Auteur", "Show" };
+		String[] col = { "ID", "Titre", "RÃ©sumÃ©", "Date crÃ©ation", "Auteur"};
 		DefaultTableModel tab = new DefaultTableModel(null, col);
 
 		ArticleDao cliDao = new ArticleDao();

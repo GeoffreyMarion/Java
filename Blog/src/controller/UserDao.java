@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import DAO.Database;
 import DAO.iDAO;
 import modele.User;
@@ -25,7 +24,7 @@ public class UserDao implements iDAO<User> {
 		return true;
 		}
 		catch (SQLException e){
-			System.out.println("Données non crées");
+			System.out.println("Donnï¿½es non crï¿½es");
 			e.printStackTrace();
 		}
 		return false;
@@ -44,7 +43,7 @@ public class UserDao implements iDAO<User> {
 				System.err.println("Prenom: "+user.getPrenom()+"\nNom: "+user.getNom()+"\nEmail: "+user.getEmail()+"\n----------------");
 			}
 		} catch (SQLException e) {
-			System.out.println("Données non lues");
+			System.out.println("Donnï¿½es non lues");
 			e.printStackTrace();
 		}
 		return ListUsers;
@@ -70,7 +69,7 @@ public class UserDao implements iDAO<User> {
 			}
 			return user;
 		}
-		else {System.out.println("Update non fait mail non présent dans la base");}
+		else {System.out.println("Update non fait mail non prï¿½sent dans la base");}
 		return null;
 	}*/
 
@@ -107,10 +106,10 @@ public class UserDao implements iDAO<User> {
 				return user;
 			}
 		} catch (SQLException e) {
-			System.out.println("Données non lues");
+			System.out.println("Donnï¿½es non lues");
 			e.printStackTrace();
 		}
-		if(afficher==null){System.err.println(id+" ne se trouve pas dans la base de données\n----------------");
+		if(afficher==null){System.err.println(id+" ne se trouve pas dans la base de donnï¿½es\n----------------");
 		}
 		return null;
 	}
@@ -132,10 +131,10 @@ public class UserDao implements iDAO<User> {
 				return user;
 			}
 		} catch (SQLException e) {
-			System.out.println("Données non lues");
+			System.out.println("Donnï¿½es non lues");
 			e.printStackTrace();
 		}
-		if(afficher==null){System.err.println(email+" ne se trouve pas dans la base de données\n----------------");
+		if(afficher==null){System.err.println(email+" ne se trouve pas dans la base de donnï¿½es\n----------------");
 		}
 		return null;
 	}
@@ -155,28 +154,34 @@ public class UserDao implements iDAO<User> {
 			}
 			return Users;
 		} catch (SQLException e) {
-			System.out.println("Données non lues");
+			System.out.println("Donnï¿½es non lues");
 			e.printStackTrace();
 		}
-		if(afficher==null){System.err.println(nom+" ne se trouve pas dans la base de données\n----------------");
+		if(afficher==null){System.err.println(nom+" ne se trouve pas dans la base de donnï¿½es\n----------------");
 		}
 		return null;
 	}
-	public boolean testlog(String email,String pass) {
+	public User testlog(String email,String pass) {
 	ResultSet afficher=null;
 		try {
 			PreparedStatement statement = connection.prepareStatement("SELECT * FROM User WHERE email LIKE ? AND pwd LIKE PASSWORD(?)");
 			statement.setString(1,email);
 			statement.setString(2,pass);
 			afficher=statement.executeQuery();
-			if(afficher.next()) {
-				return true;
-			}
+			while (afficher.next()) {
+				String Nom = afficher.getString("nom");
+				String Prenom = afficher.getString("prenom");
+				String Pass = afficher.getString("pwd");
+				String Email = afficher.getString("email");
+				String Tel = afficher.getString("tel");
+				User user= new User (Nom,Prenom,Pass,Email,Tel);
+				return user;
+				}
 		} catch (SQLException e) {
-			System.out.println("Données non lues");
+			System.out.println("DonnÃ©es non lues");
 			e.printStackTrace();
 		}
-		return false;
+		return null;
 	}
 
 	@Override

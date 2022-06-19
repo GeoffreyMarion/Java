@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import DAO.Database;
 import DAO.iDAO;
 import modele.Article;
@@ -17,7 +16,7 @@ public class ArticleDao implements iDAO<Article>{
 	@Override
 	public boolean create(Article objet) {
 		try {
-			PreparedStatement statement = connection.prepareStatement("Insert INTO Articles(titre,resume,contenu,date,auteur) VALUES (?,?,?,?,?)");
+			PreparedStatement statement = connection.prepareStatement("Insert INTO Article(titre,resume,contenu,date,auteur) VALUES (?,?,?,?,?)");
 			statement.setString(1,objet.getTitre());
 			statement.setString(2,objet.getResume());
 			statement.setString(3,objet.getContenu());
@@ -27,7 +26,7 @@ public class ArticleDao implements iDAO<Article>{
 			return true;
 			}
 			catch (SQLException e){
-				System.out.println("Données non crées");
+				System.out.println("Donnï¿½es non crï¿½es");
 				e.printStackTrace();
 			}
 			return false;
@@ -36,19 +35,19 @@ public class ArticleDao implements iDAO<Article>{
 	@Override
 	public ArrayList<Article> read() {
 		ResultSet afficher;
-		ArrayList<Article> ListArticles= new ArrayList<>();
+		ArrayList<Article> ListArticle= new ArrayList<>();
 		try {
-			PreparedStatement statement = connection.prepareStatement("SELECT* FROM Articles");
+			PreparedStatement statement = connection.prepareStatement("SELECT* FROM Article");
 			afficher=statement.executeQuery();
 			while (afficher.next()) {
 				Article art=new Article(afficher.getInt("id"),afficher.getString("titre"),afficher.getString("resume"),afficher.getString("contenu"),afficher.getString("date"),afficher.getString("auteur"));
-				ListArticles.add(art);
+				ListArticle.add(art);
 			}
 		} catch (SQLException e) {
-			System.out.println("Données non lues");
+			System.out.println("Donnï¿½es non lues");
 			e.printStackTrace();
 		}
-		return ListArticles;
+		return ListArticle;
 	}
 
 	@Override
@@ -62,7 +61,7 @@ public class ArticleDao implements iDAO<Article>{
 		// TODO Auto-generated method stub
 		findById(object.getId());
 		try {
-			PreparedStatement statement = connection.prepareStatement("DELETE FROM Articles WHERE id=?");
+			PreparedStatement statement = connection.prepareStatement("DELETE FROM Article WHERE id=?");
 			statement.setInt(1,object.getId());
 			statement.executeUpdate();
 			System.out.println("Delete de "+object.getId()+" fait\n----------------");
@@ -78,7 +77,7 @@ public class ArticleDao implements iDAO<Article>{
 	public Article findById(int id) {
 		ResultSet afficher=null;
 		try {
-			PreparedStatement statement = connection.prepareStatement("SELECT* FROM Articles WHERE id=?");
+			PreparedStatement statement = connection.prepareStatement("SELECT* FROM Article WHERE id=?");
 			statement.setInt(1,id);
 			afficher=statement.executeQuery();
 			while (afficher.next()) {
@@ -92,10 +91,10 @@ public class ArticleDao implements iDAO<Article>{
 				return art;
 			}
 		} catch (SQLException e) {
-			System.out.println("Données non lues");
+			System.out.println("Donnï¿½es non lues");
 			e.printStackTrace();
 		}
-		if(afficher==null){System.err.println(id+" ne se trouve pas dans la base de données\n----------------");
+		if(afficher==null){System.err.println(id+" ne se trouve pas dans la base de donnï¿½es\n----------------");
 		}
 		return null;
 	}
@@ -106,19 +105,19 @@ public class ArticleDao implements iDAO<Article>{
 		ArrayList<Article> Articles= new ArrayList<>();
 		
 		try {
-			PreparedStatement statement = connection.prepareStatement("SELECT* FROM Articles WHERE auteur LIKE ?");
+			PreparedStatement statement = connection.prepareStatement("SELECT* FROM Article WHERE auteur LIKE ?");
 			statement.setString(1,nom);
 			afficher=statement.executeQuery();
 			while (afficher.next()) {
-				Article art=new Article(afficher.getString("nom"),afficher.getString("prenom"),afficher.getString("pwd"),afficher.getString("email"),afficher.getString("tel"));
+				Article art=new Article(afficher.getInt("id"),afficher.getString("titre"),afficher.getString("resume"),afficher.getString("contenu"),afficher.getString("date"),afficher.getString("auteur"));
 				Articles.add(art);
 			}
 			return Articles;
 		} catch (SQLException e) {
-			System.out.println("Données non lues");
+			System.out.println("DonnÃ©es non lues");
 			e.printStackTrace();
 		}
-		if(afficher==null){System.err.println(nom+" ne se trouve pas dans la base de données\n----------------");
+		if(afficher==null){System.err.println(nom+" ne se trouve pas dans la base de donnÃ©es\n----------------");
 		}
 		return null;
 	}

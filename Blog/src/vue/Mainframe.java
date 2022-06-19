@@ -4,29 +4,18 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.TableColumnModel;
-
 import controller.UserDao;
 import modele.User;
-
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.Color;
-
 import javax.swing.JOptionPane;
-
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JButton;
-import javax.swing.JTextArea;
 import java.awt.event.ActionListener;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JLayeredPane;
 
 public class Mainframe extends JFrame {
@@ -35,9 +24,12 @@ public class Mainframe extends JFrame {
 	static JPanel content;
 	static JLabel Titrepage;
 	static JLayeredPane layer;
+	static User user;
 	static JPasswordField Fpassword;
 	static JTextField Fprenom;
 	static JTextField Femail;
+	static JPasswordField Fcpassword;
+	static JTextField Fcmail;
 	
 	/**
 	 * Launch the application.
@@ -98,7 +90,7 @@ public class Mainframe extends JFrame {
 		
 		JPanel contenugauche = new JPanel();
 		contenugauche.setBackground(Color.GRAY);
-		contenugauche.setBounds(0, 0, 225, 200);
+		contenugauche.setBounds(0, 0, 225, 225);
 		content.add(contenugauche);
 		contenugauche.setLayout(null);
 		
@@ -129,7 +121,7 @@ public class Mainframe extends JFrame {
 		
 		JPanel contenudroite = new JPanel();
 		contenudroite.setBackground(Color.LIGHT_GRAY);
-		contenudroite.setBounds(235, 0, 230, 200);
+		contenudroite.setBounds(235, 0, 230, 225);
 		content.add(contenudroite);
 		contenudroite.setLayout(null);
 		
@@ -158,52 +150,70 @@ public class Mainframe extends JFrame {
 		Ftel.setColumns(10);
 		
 		JPanel contenubas = new JPanel();
-		contenubas.setBackground(Color.DARK_GRAY);
-		contenubas.setBounds(0, 210, 465, 180);
+		contenubas.setBackground(Color.LIGHT_GRAY);
+		contenubas.setBounds(0, 235, 465, 155);
 		content.add(contenubas);
 		contenubas.setLayout(null);
 		
-		JTextArea txt = new JTextArea();
-		txt.setFont(new Font("Agency FB", Font.PLAIN, 20));
-		txt.setBackground(Color.DARK_GRAY);
-		txt.setDisabledTextColor(Color.WHITE);
-		txt.setForeground(Color.WHITE);
-		txt.setText("Vos infos ici!!!");
-		txt.setBounds(10, 11, 444, 151);
-		contenubas.add(txt);
+		JLabel l_email = new JLabel("Votre Email");
+		l_email.setFont(new Font("Agency FB", Font.PLAIN, 20));
+		l_email.setBounds(10, 10, 100, 25);
+		contenubas.add(l_email);
 		
-		JButton valider = new JButton("Valider");
-		valider.setFont(new Font("Agency FB", Font.PLAIN, 15));
-		valider.setBounds(125, 164, 90, 25);
-		valider.addActionListener(new ActionListener() {
+		JLabel l_Password = new JLabel("Votre Email");
+		l_Password.setFont(new Font("Agency FB", Font.PLAIN, 20));
+		l_Password.setBounds(10, 45, 100, 25);
+		contenubas.add(l_Password);
+		
+		Fcmail = new JTextField();
+		Fcmail.setColumns(10);
+		Fcmail.setBounds(115, 10, 200, 25);
+		contenubas.add(Fcmail);
+		
+		Fcpassword = new JPasswordField();
+		Fcpassword.setBounds(115, 45, 200, 25);
+		contenubas.add(Fcpassword);
+		
+		JButton inscription = new JButton("Inscription");
+		inscription.setFont(new Font("Agency FB", Font.PLAIN, 15));
+		inscription.setBounds(125, 185, 90, 25);
+		inscription.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				txt.setText("\nPassword" + (Fpassword).getPassword().toString());
-				 
-				User user = new User(Fnom.getText(),Fprenom.getText(),String.valueOf(Fpassword.getPassword()),Femail.getText(),Ftel.getText());
+				user = new User(Fnom.getText(),Fprenom.getText(),String.valueOf(Fpassword.getPassword()),Femail.getText(),Ftel.getText());
 				UserDao us = new UserDao();
 				if (us.findByEmail(Femail.getText()) == null) {
 					if (us.create(user)) {
-						JOptionPane.showMessageDialog(valider, "creation ok");
+						JOptionPane.showMessageDialog(inscription, "creation ok");
 						layer.removeAll();
 						Connection con = new Connection();
 						layer.add(con.connection());
 						Titrepage.setText("Page de connection");
 					} else {
-						JOptionPane.showMessageDialog(valider, "creation echec");
+						JOptionPane.showMessageDialog(inscription, "creation echec");
 					}
 				}
-				else { JOptionPane.showMessageDialog(valider, "email dÈj‡ utilisÈ");} 
+				else { JOptionPane.showMessageDialog(inscription, "email d√©j√† utilis√©");} 
 			}
 		});
-		contenugauche.add(valider);
+		contenudroite.add(inscription);
+		
+		JButton connection = new JButton("Connection");
+		connection.setFont(new Font("Agency FB", Font.PLAIN, 15));
+		connection.setBounds(360, 45, 90, 25);
+		connection.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				UserDao us = new UserDao();
+				if (us.testlog(Fcmail.getText(),String.valueOf(Fcpassword.getPassword())) != null) {
+						user=us.testlog(Fcmail.getText(),String.valueOf(Fcpassword.getPassword()));
+						JOptionPane.showMessageDialog(connection, "Connection ok");
+						Mainframe.layer.removeAll();
+						ListArticles art = new ListArticles();
+						Mainframe.layer.add(art.larticles());
+						Mainframe.Titrepage.setText("Liste des articles");
+				}
+				else { JOptionPane.showMessageDialog(connection, "Mail ou mot de pass erron√©");} 
+			}
+		});
+		contenubas.add(connection);
 	}
-	/*	
-	public String infos() {
-		String nom=Fnom.getText();
-		String prenom=Fprenom.getText();
-		String mail=Femail.getText();
-		String tel=Ftel.getText();
-		String result="Informations: \nNom: "+ nom +"\nPrenom: "+ prenom +"\nEmail: "+ mail +"\nTel: "+ tel;
-		return result;
-		}*/
 }

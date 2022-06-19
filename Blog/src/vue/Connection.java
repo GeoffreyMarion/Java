@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -16,7 +15,7 @@ import javax.swing.JTextField;
 import controller.UserDao;
 
 public class Connection extends JPanel{
-	JPanel content;
+	private JPanel content;
 	
 	public JPanel connection() {
 	content = new JPanel();
@@ -76,14 +75,15 @@ public class Connection extends JPanel{
 		public void actionPerformed(ActionEvent e) {
 			ctxt.setText("Email: " +Fcmail.getText()+ "\nPassword: " + (Fcpassword).getPassword().toString());
 			UserDao us = new UserDao();
-			if (us.testlog(Fcmail.getText(),String.valueOf(Fcpassword.getPassword()))) {
+			if (us.testlog(Fcmail.getText(),String.valueOf(Fcpassword.getPassword())) != null) {
+					Mainframe.user=us.testlog(Fcmail.getText(),String.valueOf(Fcpassword.getPassword()));
 					JOptionPane.showMessageDialog(connection, "Connection ok");
 					Mainframe.layer.removeAll();
 					ListArticles art = new ListArticles();
 					Mainframe.layer.add(art.larticles());
-					Mainframe.Titrepage.setText("Bienvenu "+Mainframe.Fprenom.getText()+"");
+					Mainframe.Titrepage.setText("Liste des articles");
 			}
-			else { JOptionPane.showMessageDialog(connection, "Mail ou mot de pass erroné");} 
+			else { JOptionPane.showMessageDialog(connection, "Mail ou mot de pass erronÃ©");} 
 		}
 	});
 	contenudroite.add(connection);
