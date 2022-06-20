@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -11,13 +12,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
 import controller.ArticleDao;
 import modele.Article;
 
-public class Writeart {
+public class Updateart {
 	static Article article;
 	private JPanel content;
-	public JPanel write() {
+	public JPanel updateart() {
+		article=ListArticles.article;
 		content = new JPanel();
 		content.setBounds(0, 0, 465, 390);
 		content.setLayout(null);
@@ -36,6 +39,7 @@ public class Writeart {
 		
 		JTextField Ftitre = new JTextField();
 		Ftitre.setBounds(160, 5, 300, 25);
+		Ftitre.setText(article.getTitre());
 		contenuhaut.add(Ftitre);
 		Ftitre.setColumns(10);
 		
@@ -47,6 +51,7 @@ public class Writeart {
 		
 		JTextField Fresume = new JTextField();
 		Fresume.setBounds(160, 40, 300, 25);
+		Fresume.setText(article.getResume());
 		contenuhaut.add(Fresume);
 		Fresume.setColumns(10);
 
@@ -62,6 +67,7 @@ public class Writeart {
 		
 		JTextArea artText = new JTextArea();
 		artText.setBounds(5, 5, 465, 255);
+		artText.setText(article.getContenu());
 		scrollb.add(artText);
 		
 		scrollb.setViewportView(artText);
@@ -72,32 +78,31 @@ public class Writeart {
 		content.add(contenubas);
 		contenubas.setLayout(null);
 		
-		JButton publier = new JButton("Publier");
-		publier.setFont(new Font("Agency FB", Font.PLAIN, 15));
-		publier.setBounds(370, 5, 90, 25);
-		publier.addActionListener(new ActionListener() {
+		JButton editer = new JButton("Editer");
+		editer.setFont(new Font("Agency FB", Font.PLAIN, 15));
+		editer.setBounds(370, 5, 90, 25);
+		editer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!isEmpty(Ftitre) || !isEmpty(Fresume) || !isEmptyt(artText)) {
-					article = new Article(Ftitre.getText(), Fresume.getText(), artText.getText(),
-							Mainframe.user.getPrenom() +" "+ Mainframe.user.getNom(), Mainframe.user.getId());
+					//article.setTitre(Ftitre.getText());
+					//article.setResume(Fresume.getText());
+					//article.setContenu(artText.getText());
 					ArticleDao ar = new ArticleDao();
-					if (ar.create(article)) {
-						article.setDate(ar.findDatebyTitre(article.getTitre()));
-						article.setId(ar.findIdbyTitre(article.getTitre()));
-						JOptionPane.showMessageDialog(publier, "Article créé");
+					if (ar.update(article,Ftitre.getText(),Fresume.getText(),artText.getText(),article.getId())!=null) {
+						JOptionPane.showMessageDialog(editer, "Article modifié");
 						Mainframe.layer.removeAll();
 						ListArticles lart = new ListArticles();
 						Mainframe.layer.add(lart.larticles());
-						Mainframe.Titrepage.setText("Bienvenue " + Mainframe.user.getPrenom() + "");
+						Mainframe.Titrepage.setText("Liste des articles");
 					}
 
 					else {
-						JOptionPane.showMessageDialog(publier, "Article invalide");
+						JOptionPane.showMessageDialog(editer, "Article invalide");
 					}
 				}
 			}
 		});
-		contenubas.add(publier);
+		contenubas.add(editer);
 		
 		JButton retour = new JButton("Retour");
 		retour.setFont(new Font("Agency FB", Font.PLAIN, 15));
@@ -127,3 +132,4 @@ public class Writeart {
 		else {return false;}
 	}
 }
+

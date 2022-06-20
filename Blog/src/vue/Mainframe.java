@@ -73,7 +73,7 @@ public class Mainframe extends JFrame {
 		Titrepage = new JLabel("Formulaire d'inscription");
 		Titrepage.setFont(new Font("Agency FB", Font.PLAIN, 25));
 		Titrepage.setForeground(Color.WHITE);
-		Titrepage.setBounds(10, 5, 290, 30);
+		Titrepage.setBounds(5, 5, 455, 30);
 		Fondtitre.add(Titrepage);
 		
 		layer = new JLayeredPane();
@@ -183,16 +183,13 @@ public class Mainframe extends JFrame {
 				UserDao us = new UserDao();
 				if (us.findByEmail(Femail.getText()) == null) {
 					if (us.create(user)) {
-						JOptionPane.showMessageDialog(inscription, "creation ok");
-						layer.removeAll();
-						Connection con = new Connection();
-						layer.add(con.connection());
-						Titrepage.setText("Page de connection");
+						JOptionPane.showMessageDialog(inscription, "Inscription ok");
+						user.setId(us.idbymail(user.getEmail()));
 					} else {
-						JOptionPane.showMessageDialog(inscription, "creation echec");
+						JOptionPane.showMessageDialog(inscription, "Inscription echec");
 					}
 				}
-				else { JOptionPane.showMessageDialog(inscription, "email d√©j√† utilis√©");} 
+				else { JOptionPane.showMessageDialog(inscription, "email dÈj‡† utilisÈ");} 
 			}
 		});
 		contenudroite.add(inscription);
@@ -205,13 +202,14 @@ public class Mainframe extends JFrame {
 				UserDao us = new UserDao();
 				if (us.testlog(Fcmail.getText(),String.valueOf(Fcpassword.getPassword())) != null) {
 						user=us.testlog(Fcmail.getText(),String.valueOf(Fcpassword.getPassword()));
+						user.setId(us.idbymail(user.getEmail()));
 						JOptionPane.showMessageDialog(connection, "Connection ok");
 						Mainframe.layer.removeAll();
 						ListArticles art = new ListArticles();
 						Mainframe.layer.add(art.larticles());
 						Mainframe.Titrepage.setText("Liste des articles");
 				}
-				else { JOptionPane.showMessageDialog(connection, "Mail ou mot de pass erron√©");} 
+				else { JOptionPane.showMessageDialog(connection, "Mail ou mot de pass erronÈ");} 
 			}
 		});
 		contenubas.add(connection);

@@ -1,10 +1,12 @@
 package modele;
 
+import java.util.Date;
+
 public class Commentaire {
 	private int id;
 	private int article;
 	private String auteur;
-	private String date;
+	private Date date;
 	private String contenu;
 	
 	public int getArticle() {
@@ -19,10 +21,10 @@ public class Commentaire {
 	public void setAuteur(String auteur) {
 		this.auteur = auteur;
 	}
-	public String getDate() {
+	public Date getDate() {
 		return date;
 	}
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 	public String getContenu() {
@@ -34,7 +36,11 @@ public class Commentaire {
 	public int getId() {
 		return id;
 	}
-	public Commentaire(int id, int article, String auteur, String date, String contenu) {
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public Commentaire(int id, int article, String auteur, Date date, String contenu) {
 		this.id = id;
 		this.article = article;
 		this.auteur = auteur;
@@ -42,14 +48,19 @@ public class Commentaire {
 		this.contenu = contenu;
 	}
 	
-	public Commentaire(int article, String auteur, String date, String contenu) {
+	public Commentaire(int article, String auteur, Date date, String contenu) {
 		this.article = article;
 		this.auteur = auteur;
 		this.date = date;
 		this.contenu = contenu;
 	}
+	public Commentaire(int article, String auteur, String contenu) {
+		this.article = article;
+		this.auteur = auteur;
+		this.contenu = contenu;
+	}
 	
-	public Commentaire(String auteur, String date, String contenu) {
+	public Commentaire(String auteur, Date date, String contenu) {
 		this.auteur = auteur;
 		this.date = date;
 		this.contenu = contenu;

@@ -56,5 +56,13 @@ public class User {
 	public int getId() {
 		return id;
 	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", nom=" + nom + ", prenom=" + prenom + ", pwd=" + pwd + ", email=" + email + ", tel="
+				+ tel + "]";
+	}
 	
 }

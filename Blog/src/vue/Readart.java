@@ -19,9 +19,9 @@ import modele.Commentaire;
 public class Readart {
 	private 
 	JPanel content;
-	private JLayeredPane contenucomm;
-	private JScrollPane comms;
-	static String contenu;
+	//private JLayeredPane contenucomm;
+	//private JScrollPane comms;
+	
 	public JPanel read_art() {
 		content = new JPanel();
 		content.setBounds(0, 0, 465, 390);
@@ -34,11 +34,11 @@ public class Readart {
 		contenuhaut.setLayout(null);
 
 		JScrollPane scrollg = new JScrollPane();
-		scrollg.setBounds(5, 5, 295, 240);
+		scrollg.setBounds(0, 5, 295, 240);
 		contenuhaut.add(scrollg);
 		
 		JTextArea artText = new JTextArea();
-		artText.setBounds(5, 5, 295, 240);
+		artText.setBounds(0, 5, 295, 240);
 		artText.setEditable(false);
 		artText.setText(ListArticles.contenu);
 		scrollg.add(artText);
@@ -53,21 +53,20 @@ public class Readart {
 		comms.setBounds(0, 0, 160, 250);
 		contenucomm.add(comms);*/
 		
-		comms = new JScrollPane();
-		comms.setBounds(305, 0, 160, 250);
-		content.add(comms);
-		comms.setLayout(null);
+		JScrollPane comms = new JScrollPane();
+		comms.setBackground(Color.LIGHT_GRAY);
+		comms.setBounds(295, 5, 170, 240);
+		contenuhaut.add(comms);
 		
-		JTextArea coms = new JTextArea();
-		coms.setBounds(0, 0, 160, 250);
-		coms.setFont(new Font("Agency FB", Font.PLAIN, 20));
-		coms.setForeground(Color.WHITE);
-		coms.setText(affiche_comm());
-		coms.setEditable(false);
-		comms.add(coms);
-		System.out.println(contenu);
+		JTextArea tcoms = new JTextArea();
+		tcoms.setBounds(295, 5, 170, 240);
+		tcoms.setFont(new Font("Agency FB", Font.PLAIN, 15));
+		tcoms.setText(affiche_comm());
+		//tcoms.setText("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+		tcoms.setEditable(false);
+		comms.add(tcoms);
 		
-		comms.setViewportView(coms);
+		comms.setViewportView(tcoms);
 		
 		JPanel contenucentre = new JPanel();
 		contenucentre.setBackground(Color.LIGHT_GRAY);
@@ -77,7 +76,7 @@ public class Readart {
 		
 		JLabel commentaire= new JLabel("Votre commentaire");
 		commentaire.setFont(new Font("Agency FB", Font.PLAIN, 20));
-		commentaire.setBounds(5, 5, 100, 25);
+		commentaire.setBounds(5, 5, 150, 25);
 		contenucentre.add(commentaire);
 		
 		JTextField Fcomm = new JTextField();
@@ -86,21 +85,27 @@ public class Readart {
 		
 		JButton poster = new JButton("Poster");
 		poster.setFont(new Font("Agency FB", Font.PLAIN, 15));
-		poster.setBounds(5, 60, 90, 25);
+		poster.setBounds(370, 60, 90, 25);
 		poster.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Commentaire comm = new Commentaire(ListArticles.article.getId(),Mainframe.user.getNom(),"fff",Fcomm.getText());
+				Commentaire comm = new Commentaire(ListArticles.article.getId(),
+						Mainframe.user.getPrenom() + "" + Mainframe.user.getNom(), Fcomm.getText());
 				CommentaireDao cDao = new CommentaireDao();
-				if(cDao.create(comm)) {
-					JOptionPane.showMessageDialog(poster, "Commentaire publiÃ©");
-					Mainframe.layer.removeAll();
-					contenucomm.removeAll();
-					Readart rart = new Readart();
-					//contenucomm.add(rart.affiche_comm());
-					Mainframe.layer.add(rart.read_art());
-					Mainframe.Titrepage.setText("Bienvenu "+Mainframe.user.getPrenom()+"");
+				if (!isEmpty(Fcomm)) {
+					if (cDao.create(comm)) {
+						comm.setDate(cDao.findDatebyContenu(comm.getContenu()));
+						comm.setId(cDao.findIdbyContenu(comm.getContenu()));
+						JOptionPane.showMessageDialog(poster, "Commentaire publié");
+						Mainframe.layer.removeAll();
+						Readart rart = new Readart();
+						// comms.removeAll();
+						// coms.add(rart.affiche_comm());
+						Mainframe.layer.add(rart.read_art());
+						Mainframe.Titrepage.setText("Lecture d'article: "+ListArticles.article.getTitre());
+					} else {
+						JOptionPane.showMessageDialog(poster, "Commentaire invalide");
+					}
 				}
-				else { JOptionPane.showMessageDialog(poster, "Article invalide");} 
 			}
 		});
 		contenucentre.add(poster);
@@ -113,14 +118,13 @@ public class Readart {
 		
 		JButton retour = new JButton("Retour");
 		retour.setFont(new Font("Agency FB", Font.PLAIN, 15));
-		retour.setBounds(5, 5, 90, 25);
+		retour.setBounds(370, 5, 90, 25);
 		retour.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 						Mainframe.layer.removeAll();
-						Mainframe.layer.removeAll();
 						ListArticles art = new ListArticles();
 						Mainframe.layer.add(art.larticles());
-						Mainframe.Titrepage.setText("Bienvenu "+Mainframe.user.getPrenom()+"");
+						Mainframe.Titrepage.setText("Liste des articles");
 			}
 		});
 		contenubas.add(retour);
@@ -163,13 +167,19 @@ public class Readart {
 	public String affiche_comm() {
 		CommentaireDao commDao = new CommentaireDao();
 		ArrayList<Commentaire> listCommentaire = new ArrayList<>();
-		listCommentaire.addAll(commDao.read());
-		contenu=null;
+		listCommentaire.addAll(commDao.ComsByArt_Id(ListArticles.article_id));
+		String contenu="";
 		
 		for (Commentaire comm : listCommentaire) {
-			contenu+=comm.getAuteur()+"\t\t"+comm.getDate()+"\n"+comm.getContenu()+"\n\\n";
+			contenu+="   "+comm.getAuteur()+"     "+comm.getDate()+"\n   "+comm.getContenu()+"\n_______________________________\n";
 		}
 		return contenu;
+	}
+	public boolean isEmpty(JTextField field) {
+		if(field.getText()==null) {
+		return true;	
+		}
+		else {return false;}
 	}
 	
 }
