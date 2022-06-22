@@ -7,7 +7,25 @@ public class User {
 	private String pwd;
 	private String email;
 	private String tel;
+	private boolean admin=false;
 	
+	public User(int id, String nom, String prenom, String pwd, String email, String tel,boolean admin) {
+		this.id = id;
+		this.nom = nom;
+		this.prenom = prenom;
+		this.pwd = pwd;
+		this.email = email;
+		this.tel = tel;
+		this.admin = admin;
+	}
+	public User(String nom, String prenom, String pwd, String email, String tel,boolean admin) {
+		this.nom = nom;
+		this.prenom = prenom;
+		this.pwd = pwd;
+		this.email = email;
+		this.tel = tel;
+		this.admin = admin;
+	}
 	public User(int id, String nom, String prenom, String pwd, String email, String tel) {
 		this.id = id;
 		this.nom = nom;
@@ -15,6 +33,7 @@ public class User {
 		this.pwd = pwd;
 		this.email = email;
 		this.tel = tel;
+		this.admin = false;
 	}
 	public User(String nom, String prenom, String pwd, String email, String tel) {
 		this.nom = nom;
@@ -22,6 +41,13 @@ public class User {
 		this.pwd = pwd;
 		this.email = email;
 		this.tel = tel;
+	}
+	
+	public boolean isAdmin() {
+		return admin;
+	}
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
 	}
 	public String getNom() {
 		return nom;
@@ -62,7 +88,7 @@ public class User {
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", nom=" + nom + ", prenom=" + prenom + ", pwd=" + pwd + ", email=" + email + ", tel="
-				+ tel + "]";
+				+ tel + ", admin=" + admin +"]";
 	}
 	
 }

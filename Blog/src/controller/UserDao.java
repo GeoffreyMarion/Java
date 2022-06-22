@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import DAO.Database;
 import DAO.iDAO;
+import modele.Article;
 import modele.User;
 
 public class UserDao implements iDAO<User> {
@@ -38,9 +39,8 @@ public class UserDao implements iDAO<User> {
 			PreparedStatement statement = connection.prepareStatement("SELECT* FROM User");
 			afficher=statement.executeQuery();
 			while (afficher.next()) {
-				User user=new User(afficher.getString("nom"),afficher.getString("prenom"),afficher.getString("pwd"),afficher.getString("email"),afficher.getString("tel"));
+				User user=new User(afficher.getInt("id"),afficher.getString("nom"),afficher.getString("prenom"),afficher.getString("pwd"),afficher.getString("email"),afficher.getString("tel"),afficher.getBoolean("admin"));
 				ListUsers.add(user);
-				System.err.println("Prenom: "+user.getPrenom()+"\nNom: "+user.getNom()+"\nEmail: "+user.getEmail()+"\n----------------");
 			}
 		} catch (SQLException e) {
 			System.out.println("Données non lues");
@@ -48,20 +48,20 @@ public class UserDao implements iDAO<User> {
 		}
 		return ListUsers;
 	}
-
-	/*@Override
-	public User update(String femail,String nom,String prenom,String pass,String email,String tel) {
-		User user=null;
-		if(findByEmail(femail)!=null) {
-			user=findByEmail(femail);
+	
+	public User update(User user,String nom,String prenom,String email,String mdp,String tel,int id,boolean admin) {
+		User use=null;
+		if(findById(user.getId())!=null) {
+			use=findById(user.getId());
 			try {	
-				PreparedStatement statement = connection.prepareStatement("UPDATE User SET nom=?,prenom=?,pwd=?,email=?,tel=? WHERE femail=?");
+				PreparedStatement statement = connection.prepareStatement("UPDATE User SET nom=?,prenom=?,email=?,pwd=PASSWORD(?),tel=?,admin=? WHERE id=?");
 				statement.setString(1,nom);
 				statement.setString(2,prenom);
-				statement.setString(3,pass);
-				statement.setString(4,email);
+				statement.setString(3,email);
+				statement.setString(4,mdp);
 				statement.setString(5,tel);
-				statement.setString(6,femail);
+				statement.setBoolean(6,admin);
+				statement.setInt(7,id);
 				statement.executeUpdate();
 			} catch (SQLException e) {
 				System.out.println("Update non fait");
@@ -69,9 +69,9 @@ public class UserDao implements iDAO<User> {
 			}
 			return user;
 		}
-		else {System.out.println("Update non fait mail non présent dans la base");}
+		else {System.out.println("Update non fait id non présent dans la base");}
 		return null;
-	}*/
+	}
 
 	@Override
 	public boolean delete(User object) {
@@ -102,7 +102,8 @@ public class UserDao implements iDAO<User> {
 				String Pass = afficher.getString("pwd");
 				String Email = afficher.getString("email");
 				String Tel = afficher.getString("tel");
-				User user= new User (Nom,Prenom,Pass,Email,Tel);
+				boolean Admin= afficher.getBoolean("admin");
+				User user= new User (Nom,Prenom,Pass,Email,Tel,Admin);
 				return user;
 			}
 		} catch (SQLException e) {
@@ -127,7 +128,8 @@ public class UserDao implements iDAO<User> {
 				String pwd = afficher.getString("pwd");
 				String mail = afficher.getString("Email");
 				String tel = afficher.getString("tel");
-				User user= new User(nom,prenom,pwd,mail,tel);
+				boolean admin= afficher.getBoolean("admin");
+				User user= new User(nom,prenom,pwd,mail,tel,admin);
 				return user;
 			}
 		} catch (SQLException e) {
@@ -149,7 +151,7 @@ public class UserDao implements iDAO<User> {
 			statement.setString(1,nom);
 			afficher=statement.executeQuery();
 			while (afficher.next()) {
-				User user=new User(afficher.getString("nom"),afficher.getString("prenom"),afficher.getString("pwd"),afficher.getString("email"),afficher.getString("tel"));
+				User user=new User(afficher.getString("nom"),afficher.getString("prenom"),afficher.getString("pwd"),afficher.getString("email"),afficher.getString("tel"),afficher.getBoolean("admin"));
 				Users.add(user);
 			}
 			return Users;
@@ -169,12 +171,14 @@ public class UserDao implements iDAO<User> {
 			statement.setString(2,pass);
 			afficher=statement.executeQuery();
 			while (afficher.next()) {
+				int Id = afficher.getInt("id");
 				String Nom = afficher.getString("nom");
 				String Prenom = afficher.getString("prenom");
 				String Pass = afficher.getString("pwd");
 				String Email = afficher.getString("email");
 				String Tel = afficher.getString("tel");
-				User user= new User (Nom,Prenom,Pass,Email,Tel);
+				boolean Admin= afficher.getBoolean("admin");
+				User user= new User (Id,Nom,Prenom,Pass,Email,Tel,Admin);
 				return user;
 				}
 		} catch (SQLException e) {

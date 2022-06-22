@@ -23,6 +23,8 @@ public class Mainframe extends JFrame {
 	private JPanel contentPane;
 	static JPanel content;
 	static JLabel Titrepage;
+	static JLabel prenom;
+	static JLabel nom;
 	static JLayeredPane layer;
 	static User user;
 	static JPasswordField Fpassword;
@@ -73,8 +75,56 @@ public class Mainframe extends JFrame {
 		Titrepage = new JLabel("Formulaire d'inscription");
 		Titrepage.setFont(new Font("Agency FB", Font.PLAIN, 25));
 		Titrepage.setForeground(Color.WHITE);
-		Titrepage.setBounds(5, 5, 455, 30);
+		Titrepage.setBounds(5, 5, 400, 30);
 		Fondtitre.add(Titrepage);
+		
+		prenom = new JLabel();
+		prenom.setFont(new Font("Agency FB", Font.PLAIN, 15));
+		prenom.setForeground(Color.WHITE);
+		prenom.setBounds(405, -5, 50, 30);
+		Fondtitre.add(prenom);
+		
+		nom = new JLabel();
+		nom.setFont(new Font("Agency FB", Font.PLAIN, 15));
+		nom.setForeground(Color.WHITE);
+		nom.setBounds(405, 10, 50, 30);
+		Fondtitre.add(nom);
+		
+		JButton admin = new JButton("Admin");
+		admin.setFont(new Font("Agency FB", Font.PLAIN, 15));
+		admin.setBounds(370, 10, 90, 25);
+		admin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (user.isAdmin()) {
+					Fondtitre.setBackground(Color.RED);
+					Mainframe.layer.removeAll();
+					Panneau_admin p_admin = new Panneau_admin();
+					Mainframe.layer.add(p_admin.admin_p());
+					Mainframe.Titrepage.setText("Panneau admin");
+				}
+				else { JOptionPane.showMessageDialog(admin, "Vous n'êtes pas admin");} 
+			}
+		});
+		Fondtitre.add(admin);
+		admin.setVisible(false);
+		
+		JButton retour = new JButton("Retour");
+		retour.setFont(new Font("Agency FB", Font.PLAIN, 15));
+		retour.setBounds(270, 10, 90, 25);
+		retour.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (user.isAdmin()) {
+					Fondtitre.setBackground(Color.DARK_GRAY);
+					Mainframe.layer.removeAll();
+					ListArticles art = new ListArticles();
+					Mainframe.layer.add(art.larticles());
+					Mainframe.Titrepage.setText("Liste des articles");
+				}
+				else { JOptionPane.showMessageDialog(retour, "Vous n'êtes pas admin");} 
+			}
+		});
+		Fondtitre.add(retour);
+		retour.setVisible(false);
 		
 		layer = new JLayeredPane();
 		layer.setBounds(10, 60, 465, 390);
@@ -160,7 +210,7 @@ public class Mainframe extends JFrame {
 		l_email.setBounds(10, 10, 100, 25);
 		contenubas.add(l_email);
 		
-		JLabel l_Password = new JLabel("Votre Email");
+		JLabel l_Password = new JLabel("Votre Mdp");
 		l_Password.setFont(new Font("Agency FB", Font.PLAIN, 20));
 		l_Password.setBounds(10, 45, 100, 25);
 		contenubas.add(l_Password);
@@ -179,39 +229,101 @@ public class Mainframe extends JFrame {
 		inscription.setBounds(125, 185, 90, 25);
 		inscription.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				user = new User(Fnom.getText(),Fprenom.getText(),String.valueOf(Fpassword.getPassword()),Femail.getText(),Ftel.getText());
-				UserDao us = new UserDao();
-				if (us.findByEmail(Femail.getText()) == null) {
-					if (us.create(user)) {
+				user = new User(Fnom.getText(),Fprenom.getText(),String.valueOf(Fpassword.getPassword()),Femail.getText(),Ftel.getText(),false);
+				UserDao uDao = new UserDao();
+				if (uDao.findByEmail(Femail.getText()) == null) {
+					if (uDao.create(user)) {
 						JOptionPane.showMessageDialog(inscription, "Inscription ok");
-						user.setId(us.idbymail(user.getEmail()));
+						user.setId(uDao.idbymail(user.getEmail()));
+						Fcmail.setText(Femail.getText());
+						//Fcpassword.setText(Fpassword.getPassword());
 					} else {
 						JOptionPane.showMessageDialog(inscription, "Inscription echec");
 					}
 				}
-				else { JOptionPane.showMessageDialog(inscription, "email déjà  utilisé");} 
+				else { JOptionPane.showMessageDialog(inscription, "email déja utilisé");} 
 			}
 		});
 		contenudroite.add(inscription);
+		
+		JPanel changemdp = new JPanel();
+		changemdp.setBounds(5, 75, 455, 75);
+		changemdp.setVisible(false);
+		contenubas.add(changemdp);
+		changemdp.setLayout(null);
 		
 		JButton connection = new JButton("Connection");
 		connection.setFont(new Font("Agency FB", Font.PLAIN, 15));
 		connection.setBounds(360, 45, 90, 25);
 		connection.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				UserDao us = new UserDao();
-				if (us.testlog(Fcmail.getText(),String.valueOf(Fcpassword.getPassword())) != null) {
-						user=us.testlog(Fcmail.getText(),String.valueOf(Fcpassword.getPassword()));
-						user.setId(us.idbymail(user.getEmail()));
+				UserDao uDao = new UserDao();
+				if (uDao.testlog(Fcmail.getText(),String.valueOf(Fcpassword.getPassword())) != null) {
+						user=uDao.testlog(Fcmail.getText(),String.valueOf(Fcpassword.getPassword()));
+						user.setId(uDao.idbymail(user.getEmail()));
+						nom.setText(user.getNom());
+						prenom.setText(user.getPrenom());
 						JOptionPane.showMessageDialog(connection, "Connection ok");
 						Mainframe.layer.removeAll();
 						ListArticles art = new ListArticles();
 						Mainframe.layer.add(art.larticles());
 						Mainframe.Titrepage.setText("Liste des articles");
+						if (user.isAdmin()) {
+							admin.setVisible(true);
+							retour.setVisible(true);
+						}
 				}
-				else { JOptionPane.showMessageDialog(connection, "Mail ou mot de pass erroné");} 
+				else { JOptionPane.showMessageDialog(connection, "Mail ou mot de pass erroné"); changemdp.setVisible(true);}
 			}
 		});
 		contenubas.add(connection);
+		
+		JLabel l_vemail = new JLabel("Votre Email");
+		l_vemail.setFont(new Font("Agency FB", Font.PLAIN, 20));
+		l_vemail.setBounds(5, 10, 100, 25);
+		changemdp.add(l_vemail);
+		
+		JLabel l_nPassword = new JLabel("nouveau Mdp");
+		l_nPassword.setFont(new Font("Agency FB", Font.PLAIN, 20));
+		l_nPassword.setBounds(5, 45, 100, 25);
+		changemdp.add(l_nPassword);
+		
+		JTextField Fvmail = new JTextField();
+		Fvmail.setColumns(10);
+		Fvmail.setBounds(110, 10, 200, 25);
+		changemdp.add(Fvmail);
+		
+		JTextField Fnpassword = new JPasswordField();
+		Fnpassword.setBounds(110, 45, 200, 25);
+		changemdp.add(Fnpassword);
+		
+		JButton modifier = new JButton("Modifier");
+		modifier.setFont(new Font("Agency FB", Font.PLAIN, 15));
+		modifier.setBounds(360, 45, 90, 25);
+		modifier.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				UserDao uDao = new UserDao();
+				if (!isEmpty(Fvmail) && !isEmpty(Fnpassword)) {
+					if(uDao.findByEmail(Fvmail.getText())!=null) {
+						int id=uDao.idbymail(Fvmail.getText());
+						user=uDao.findById(id);
+						user.setId(id);
+						System.out.println(user);
+						uDao.update(user, user.getNom(), user.getPrenom(),user.getEmail(), Fnpassword.getText(),  user.getTel(), user.getId(), user.isAdmin());
+						user.setPwd(Fnpassword.getText());
+						JOptionPane.showMessageDialog(connection, "Modification ok");
+						changemdp.setVisible(false);
+				}
+				else { JOptionPane.showMessageDialog(connection, "Mail ou mot de passe erroné");}
+				}
+			}
+		});
+		changemdp.add(modifier);
+	}
+	public boolean isEmpty(JTextField field) {
+		if(field.getText()==null) {
+		return true;	
+		}
+		else {return false;}
 	}
 }

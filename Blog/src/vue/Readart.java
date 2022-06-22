@@ -40,6 +40,7 @@ public class Readart {
 		JTextArea artText = new JTextArea();
 		artText.setBounds(0, 5, 295, 240);
 		artText.setEditable(false);
+		artText.setLineWrap(true);
 		artText.setText(ListArticles.contenu);
 		scrollg.add(artText);
 		
@@ -60,9 +61,9 @@ public class Readart {
 		
 		JTextArea tcoms = new JTextArea();
 		tcoms.setBounds(295, 5, 170, 240);
+		tcoms.setLineWrap(true);
 		tcoms.setFont(new Font("Agency FB", Font.PLAIN, 15));
 		tcoms.setText(affiche_comm());
-		//tcoms.setText("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
 		tcoms.setEditable(false);
 		comms.add(tcoms);
 		
@@ -171,7 +172,7 @@ public class Readart {
 		String contenu="";
 		
 		for (Commentaire comm : listCommentaire) {
-			contenu+="   "+comm.getAuteur()+"     "+comm.getDate()+"\n   "+comm.getContenu()+"\n_______________________________\n";
+			contenu+="   "+comm.getAuteur()+"     "+comm.getDate()+"\n   "+comm.getContenu()+"\n______________________________\n";
 		}
 		return contenu;
 	}

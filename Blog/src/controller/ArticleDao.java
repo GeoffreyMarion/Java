@@ -72,7 +72,26 @@ public class ArticleDao implements iDAO<Article>{
 		else {System.out.println("Update non fait mail non présent dans la base");}
 		return null;
 	}
-
+	
+	public Article updateAuteur(Article article,String auteur) {
+		Article art=null;
+		if(findById(article.getId())!=null) {
+			art=findById(article.getId());
+			int id=art.getId();
+			try {	
+				PreparedStatement statement = connection.prepareStatement("UPDATE Article SET auteur=?WHERE id=?");
+				statement.setString(1,auteur);
+				statement.setInt(2,id);
+				statement.executeUpdate();
+			} catch (SQLException e) {
+				System.out.println("Update non fait");
+				e.printStackTrace();
+			}
+			return art;
+		}
+		else {System.out.println("Update non fait mail non présent dans la base");}
+		return null;
+	}
 	@Override
 	public boolean delete(Article object) {
 		findById(object.getId());

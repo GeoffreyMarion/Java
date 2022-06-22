@@ -13,7 +13,9 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import controller.ArticleDao;
+import controller.CommentaireDao;
 import modele.Article;
+import modele.Commentaire;
 
 public class ListArticles extends JPanel{
 	private JPanel content;
@@ -137,10 +139,15 @@ public class ListArticles extends JPanel{
 				if (tarticle.getSelectedRow() != -1) {
 					int id = tarticle.getSelectedRow();
 					article_id = (int) tarticle.getModel().getValueAt(id, 0);
-					ArticleDao artD = new ArticleDao();
-					article = artD.findById(article_id);
+					ArticleDao artDao = new ArticleDao();
+					CommentaireDao commDao = new CommentaireDao();
+					article = artDao.findById(article_id);
 					if (article.getAuteur_id() == Mainframe.user.getId()) {
-						artD.delete(article);
+						artDao.delete(article);
+						ArrayList<Commentaire> listCommentaire = commDao.ComsByArt_Id(article_id);
+						for (Commentaire commentaire : listCommentaire) {
+							commDao.delete(commentaire);
+						}
 						JOptionPane.showMessageDialog(lire, "Article supprimé");
 						Mainframe.layer.removeAll();
 						ListArticles art = new ListArticles();

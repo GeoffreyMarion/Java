@@ -9,7 +9,7 @@ import java.util.Date;
 
 import DAO.Database;
 import DAO.iDAO;
-
+import modele.Article;
 import modele.Commentaire;
 
 public class CommentaireDao implements iDAO<Commentaire> {
@@ -49,7 +49,46 @@ public class CommentaireDao implements iDAO<Commentaire> {
 		}
 		return ListCommentaire;
 	}
-
+	
+	public Commentaire update(Commentaire commentaire,String contenu,int id) {
+		Commentaire comm=null;
+		if(findById(commentaire.getId())!=null) {
+			comm=findById(commentaire.getId());
+			try {	
+				PreparedStatement statement = connection.prepareStatement("UPDATE Commentaire SET contenu=?,date=now() WHERE id=?");
+				statement.setString(1,contenu);
+				statement.setInt(2,id);
+				statement.executeUpdate();
+			} catch (SQLException e) {
+				System.out.println("Update non fait");
+				e.printStackTrace();
+			}
+			return comm;
+		}
+		else {System.out.println("Update non fait id non présent dans la base");}
+		return null;
+	}
+	
+	public Commentaire updateAuteur(Commentaire comm,String auteur) {
+		Commentaire com=null;
+		if(findById(comm.getId())!=null) {
+			com=findById(comm.getId());
+			int id=com.getId();
+			try {	
+				PreparedStatement statement = connection.prepareStatement("UPDATE Commentaire SET auteur=?WHERE id=?");
+				statement.setString(1,auteur);
+				statement.setInt(2,id);
+				statement.executeUpdate();
+			} catch (SQLException e) {
+				System.out.println("Update non fait");
+				e.printStackTrace();
+			}
+			return com;
+		}
+		else {System.out.println("Update non fait mail non présent dans la base");}
+		return null;
+	}
+	
 	@Override
 	public boolean delete(Commentaire object) {
 		findById(object.getId());
@@ -83,7 +122,7 @@ public class CommentaireDao implements iDAO<Commentaire> {
 				return comm;
 			}
 		} catch (SQLException e) {
-			System.out.println("Donnï¿½es non lues");
+			System.out.println("Données non lues");
 			e.printStackTrace();
 		}
 		if (afficher == null) {

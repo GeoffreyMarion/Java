@@ -62,6 +62,7 @@ public class Writeart {
 		
 		JTextArea artText = new JTextArea();
 		artText.setBounds(5, 5, 465, 255);
+		artText.setLineWrap(true);
 		scrollb.add(artText);
 		
 		scrollb.setViewportView(artText);

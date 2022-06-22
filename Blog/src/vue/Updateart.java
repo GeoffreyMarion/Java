@@ -68,6 +68,7 @@ public class Updateart {
 		JTextArea artText = new JTextArea();
 		artText.setBounds(5, 5, 465, 255);
 		artText.setText(article.getContenu());
+		artText.setLineWrap(true);
 		scrollb.add(artText);
 		
 		scrollb.setViewportView(artText);
