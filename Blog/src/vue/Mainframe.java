@@ -14,24 +14,40 @@ import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 import javax.swing.JLayeredPane;
 
 public class Mainframe extends JFrame {
-
-	private JPanel contentPane;
+	static User user;
 	static JPanel content;
 	static JLabel Titrepage;
-	static JLabel prenom;
-	static JLabel nom;
 	static JLayeredPane layer;
-	static User user;
-	static JPasswordField Fpassword;
-	static JTextField Fprenom;
-	static JTextField Femail;
-	static JPasswordField Fcpassword;
-	static JTextField Fcmail;
+	
+	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = 
+		    Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+		public static boolean validmail(String mail) {
+		        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(mail);
+		        return matcher.find();
+		}
+	
+		public static final Pattern VALID_PRE_NOM_REGEX = Pattern.compile("^[a-zA-Z ]*$", Pattern.CASE_INSENSITIVE);
+
+		public static boolean validnom(String pre_nom) {
+			Matcher matcher = VALID_PRE_NOM_REGEX.matcher(pre_nom);
+			return matcher.find();
+		}
+
+		public static final Pattern VALID_Num_REGEX = Pattern.compile("^[0-9]{10}$", Pattern.CASE_INSENSITIVE);
+
+		public static boolean validtel(String tel) {
+			Matcher matcher = VALID_Num_REGEX.matcher(tel);
+			return matcher.find();
+		}
+	
 	
 	/**
 	 * Launch the application.
@@ -61,7 +77,7 @@ public class Mainframe extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 500, 500);
 		
-		contentPane = new JPanel();
+		JPanel contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -78,13 +94,13 @@ public class Mainframe extends JFrame {
 		Titrepage.setBounds(5, 5, 400, 30);
 		Fondtitre.add(Titrepage);
 		
-		prenom = new JLabel();
+		JLabel prenom = new JLabel();
 		prenom.setFont(new Font("Agency FB", Font.PLAIN, 15));
 		prenom.setForeground(Color.WHITE);
 		prenom.setBounds(405, -5, 50, 30);
 		Fondtitre.add(prenom);
 		
-		nom = new JLabel();
+		JLabel nom = new JLabel();
 		nom.setFont(new Font("Agency FB", Font.PLAIN, 15));
 		nom.setForeground(Color.WHITE);
 		nom.setBounds(405, 10, 50, 30);
@@ -180,16 +196,16 @@ public class Mainframe extends JFrame {
 		contenudroite.add(Fnom);
 		Fnom.setColumns(10);
 		
-		Fprenom = new JTextField();
+		JTextField Fprenom = new JTextField();
 		Fprenom.setColumns(10);
 		Fprenom.setBounds(15, 45, 200, 25);
 		contenudroite.add(Fprenom);
 		
-		Fpassword = new JPasswordField();
+		JPasswordField Fpassword = new JPasswordField();
 		Fpassword.setBounds(15, 80, 200, 25);
 		contenudroite.add(Fpassword);
 		
-		Femail = new JTextField();
+		JTextField Femail = new JTextField();
 		Femail.setColumns(10);
 		Femail.setBounds(15, 115, 200, 25);
 		contenudroite.add(Femail);
@@ -215,12 +231,12 @@ public class Mainframe extends JFrame {
 		l_Password.setBounds(10, 45, 100, 25);
 		contenubas.add(l_Password);
 		
-		Fcmail = new JTextField();
+		JTextField Fcmail = new JTextField();
 		Fcmail.setColumns(10);
 		Fcmail.setBounds(115, 10, 200, 25);
 		contenubas.add(Fcmail);
 		
-		Fcpassword = new JPasswordField();
+		JPasswordField Fcpassword = new JPasswordField();
 		Fcpassword.setBounds(115, 45, 200, 25);
 		contenubas.add(Fcpassword);
 		
@@ -229,19 +245,27 @@ public class Mainframe extends JFrame {
 		inscription.setBounds(125, 185, 90, 25);
 		inscription.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				user = new User(Fnom.getText(),Fprenom.getText(),String.valueOf(Fpassword.getPassword()),Femail.getText(),Ftel.getText(),false);
 				UserDao uDao = new UserDao();
-				if (uDao.findByEmail(Femail.getText()) == null) {
-					if (uDao.create(user)) {
-						JOptionPane.showMessageDialog(inscription, "Inscription ok");
-						user.setId(uDao.idbymail(user.getEmail()));
-						Fcmail.setText(Femail.getText());
-						//Fcpassword.setText(Fpassword.getPassword());
-					} else {
-						JOptionPane.showMessageDialog(inscription, "Inscription echec");
+				user = new User(Fnom.getText(), Fprenom.getText(), String.valueOf(Fpassword.getPassword()),
+						Femail.getText(), Ftel.getText(), false);
+				if (!isEmpty(Fnom) && !isEmpty(Fprenom) && !isEmpty(Fpassword) && !isEmpty(Femail) && !isEmpty(Ftel)) {
+					System.out.println();
+					if (uDao.findByEmail(Femail.getText()) == null && validmail(Femail.getText()) && validnom(Fnom.getText()) && validnom(Fprenom.getText())  && validtel(Ftel.getText())) {
+						if (uDao.create(user)) {
+							JOptionPane.showMessageDialog(inscription, "Inscription ok");
+							user.setId(uDao.idbymail(user.getEmail()));
+							Fcmail.setText(Femail.getText());
+						} else {
+							JOptionPane.showMessageDialog(inscription, "Inscription echec");
+						}
 					}
+					if(!validnom(Fnom.getText())){JOptionPane.showMessageDialog(inscription, "Nom invalde");}
+					if(!validnom(Fprenom.getText())){JOptionPane.showMessageDialog(inscription, "Prenom invalde");}
+					if(uDao.findByEmail(Femail.getText()) != null) {JOptionPane.showMessageDialog(inscription, "email déja utilisé");}
+					if(!validmail(Femail.getText())){JOptionPane.showMessageDialog(inscription, "email invalde");}
+					if(!validtel(Ftel.getText())){JOptionPane.showMessageDialog(inscription, "Téléphone invalde");}
 				}
-				else { JOptionPane.showMessageDialog(inscription, "email déja utilisé");} 
+				else {JOptionPane.showMessageDialog(inscription, "Remplissez tous les champs");}
 			}
 		});
 		contenudroite.add(inscription);
@@ -308,20 +332,19 @@ public class Mainframe extends JFrame {
 						int id=uDao.idbymail(Fvmail.getText());
 						user=uDao.findById(id);
 						user.setId(id);
-						System.out.println(user);
 						uDao.update(user, user.getNom(), user.getPrenom(),user.getEmail(), Fnpassword.getText(),  user.getTel(), user.getId(), user.isAdmin());
 						user.setPwd(Fnpassword.getText());
 						JOptionPane.showMessageDialog(connection, "Modification ok");
 						changemdp.setVisible(false);
 				}
-				else { JOptionPane.showMessageDialog(connection, "Mail ou mot de passe erroné");}
+				else { JOptionPane.showMessageDialog(connection, "Mail pas dans la base");}
 				}
 			}
 		});
 		changemdp.add(modifier);
 	}
 	public boolean isEmpty(JTextField field) {
-		if(field.getText()==null) {
+		if(field.getText().length()==0) {
 		return true;	
 		}
 		else {return false;}

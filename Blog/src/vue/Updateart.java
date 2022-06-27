@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -84,7 +83,7 @@ public class Updateart {
 		editer.setBounds(370, 5, 90, 25);
 		editer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (!isEmpty(Ftitre) || !isEmpty(Fresume) || !isEmptyt(artText)) {
+				if (!isEmpty(Ftitre) && !isEmpty(Fresume) && !isEmptyt(artText)) {
 					//article.setTitre(Ftitre.getText());
 					//article.setResume(Fresume.getText());
 					//article.setContenu(artText.getText());
@@ -101,6 +100,7 @@ public class Updateart {
 						JOptionPane.showMessageDialog(editer, "Article invalide");
 					}
 				}
+				else {JOptionPane.showMessageDialog(editer, "Remplissez les champs");}
 			}
 		});
 		contenubas.add(editer);
@@ -121,13 +121,13 @@ public class Updateart {
 		return content;
 	}
 	public boolean isEmpty(JTextField field) {
-		if(field.getText()==null) {
+		if(field.getText().length()==0) {
 		return true;	
 		}
 		else {return false;}
 	}
 	public boolean isEmptyt(JTextArea tarea) {
-		if(tarea.getText()==null) {
+		if(tarea.getText().length()==0) {
 		return true;	
 		}
 		else {return false;}

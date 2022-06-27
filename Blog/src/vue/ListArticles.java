@@ -16,8 +16,10 @@ import controller.ArticleDao;
 import controller.CommentaireDao;
 import modele.Article;
 import modele.Commentaire;
+import modele.User;
 
 public class ListArticles extends JPanel{
+	private User user= Mainframe.user;
 	private JPanel content;
 	static Article article=null;
 	static String contenu=null;
@@ -27,7 +29,6 @@ public class ListArticles extends JPanel{
 		content = new JPanel();
 		content.setBounds(0, 0, 465, 390);
 		content.setLayout(null);
-		System.out.println(Mainframe.user);
 		
 		JPanel contenucentre = new JPanel();
 		contenucentre.setBackground(Color.GRAY);
@@ -64,7 +65,7 @@ public class ListArticles extends JPanel{
 		mtarticle.getColumn(5).setMinWidth(0);
 		mtarticle.getColumn(5).setWidth(0);
 		mtarticle.getColumn(5).setMaxWidth(0);
-
+		
 		JPanel contenubas = new JPanel();
 		contenubas.setBackground(Color.DARK_GRAY);
 		contenubas.setBounds(0, 350, 465, 40);
@@ -77,7 +78,6 @@ public class ListArticles extends JPanel{
 		lire.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ArticleDao art = new ArticleDao();
-				//if (tarticle.getSelectionModel().isSelectionEmpty()==false) {
 				if (tarticle.getSelectedRow()!=-1) {
 						int id = tarticle.getSelectedRow();
 						article_id = (int) tarticle.getModel().getValueAt(id, 0);
@@ -101,7 +101,7 @@ public class ListArticles extends JPanel{
 				Mainframe.layer.removeAll();
 				Writeart art = new Writeart();
 				Mainframe.layer.add(art.write());
-				Mainframe.Titrepage.setText("Nouvel article de " + Mainframe.user.getPrenom()+ "");
+				Mainframe.Titrepage.setText("Nouvel article de " + user.getPrenom()+ "");
 
 			}
 		});
@@ -117,7 +117,7 @@ public class ListArticles extends JPanel{
 					article_id = (int) tarticle.getModel().getValueAt(id, 0);
 					ArticleDao artD = new ArticleDao();
 					article = artD.findById(article_id);
-					if (article.getAuteur_id() == Mainframe.user.getId()) {
+					if (article.getAuteur_id() == user.getId()) {
 						Mainframe.layer.removeAll();
 						Updateart up = new Updateart();
 						Mainframe.layer.add(up.updateart());
@@ -142,7 +142,7 @@ public class ListArticles extends JPanel{
 					ArticleDao artDao = new ArticleDao();
 					CommentaireDao commDao = new CommentaireDao();
 					article = artDao.findById(article_id);
-					if (article.getAuteur_id() == Mainframe.user.getId()) {
+					if (article.getAuteur_id() == user.getId()) {
 						artDao.delete(article);
 						ArrayList<Commentaire> listCommentaire = commDao.ComsByArt_Id(article_id);
 						for (Commentaire commentaire : listCommentaire) {
@@ -168,7 +168,12 @@ public class ListArticles extends JPanel{
 	public DefaultTableModel liste() {
 
 		String[] col = { "ID", "Titre", "Résumé", "Date création", "Auteur","Auteur_id"};
-		DefaultTableModel tab = new DefaultTableModel(null, col);
+		DefaultTableModel tab = new DefaultTableModel(null, col) {
+			   @Override
+	            public boolean isCellEditable(int row, int column) {
+	                   return false;
+	                }
+		};
 
 		ArticleDao cliDao = new ArticleDao();
 

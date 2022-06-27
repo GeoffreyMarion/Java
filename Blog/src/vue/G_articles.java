@@ -22,7 +22,7 @@ import modele.Commentaire;
 import modele.User;
 
 public class G_articles {
-	private User user=Mainframe.user;
+	private User user = Mainframe.user;
 	private JPanel content;
 	private JTable tarticle;
 	static Article article=null;
@@ -138,7 +138,7 @@ public class G_articles {
 		creer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!isEmpty(Ftitre) || !isEmpty(Fcontenu)) {
-					article = new Article(Ftitre.getText(),Fresume.getText(), Fcontenu.getText(),"Geoffrey Marion",1);
+					article = new Article(Ftitre.getText(),Fresume.getText(), Fcontenu.getText(),user.getPrenom() +" "+ user.getNom(),user.getId());
 					ArticleDao artDao = new ArticleDao();
 					if (artDao.create(article)) {
 						JOptionPane.showMessageDialog(creer, "Article créé");
@@ -150,6 +150,9 @@ public class G_articles {
 					else {
 						JOptionPane.showMessageDialog(creer, "Article invalide");
 					}
+				}
+				else {
+					JOptionPane.showMessageDialog(creer, "Champs vide");
 				}
 			}
 		});
@@ -196,6 +199,9 @@ public class G_articles {
 						else {
 							JOptionPane.showMessageDialog(modifier, "Article invalide");
 						}
+					}
+					else {
+						JOptionPane.showMessageDialog(modifier, "Champs vide");
 					}
 				}
 			}
@@ -247,7 +253,12 @@ public class G_articles {
 	public DefaultTableModel liste() {
 
 		String[] col = { "ID", "Titre", "Résumé", "Date", "Auteur","Auteur_id"};
-		DefaultTableModel tab = new DefaultTableModel(null, col);
+		DefaultTableModel tab = new DefaultTableModel(null, col){
+			   @Override
+	            public boolean isCellEditable(int row, int column) {
+	                   return false;
+	                }
+		};
 
 		ArticleDao cliDao = new ArticleDao();
 
@@ -262,7 +273,7 @@ public class G_articles {
 		return tab;
 	}
 	public boolean isEmpty(JTextField field) {
-		if(field.getText()==null) {
+		if(field.getText().length()==0) {
 		return true;	
 		}
 		else {return false;}

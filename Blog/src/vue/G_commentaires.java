@@ -15,15 +15,13 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
-
-import controller.ArticleDao;
 import controller.CommentaireDao;
 import modele.Commentaire;
 import modele.User;
 
 public class G_commentaires {
+	private User user = Mainframe.user;
 	private JPanel content;
-	private User user=Mainframe.user;
 	static Commentaire commentaire=null;
 	static String contenu=null;
 	private int article_id=G_articles.article_id;
@@ -135,6 +133,9 @@ public class G_commentaires {
 						JOptionPane.showMessageDialog(creer, "Commentaire invalide");
 					}
 				}
+				else {
+					JOptionPane.showMessageDialog(creer, "Contenu vide");
+				}
 			}
 		});
 		contenubas.add(creer);
@@ -164,9 +165,6 @@ public class G_commentaires {
 					commentaire_id = (int) tcomms.getModel().getValueAt(id, 0);
 					commentaire = commDao.findById(commentaire_id);
 					if (!isEmpty(Fcontenu)) {
-						// article.setTitre(Ftitre.getText());
-						// article.setResume(Fresume.getText());
-						// article.setContenu(artText.getText());
 						if (commDao.update(commentaire, Fcontenu.getText(),commentaire_id) != null) {
 							JOptionPane.showMessageDialog(modifier, "Article modifié");
 							Mainframe.layer.removeAll();
@@ -177,6 +175,9 @@ public class G_commentaires {
 						else {
 							JOptionPane.showMessageDialog(modifier, "Article invalide");
 						}
+					}
+					else {
+						JOptionPane.showMessageDialog(modifier, "Contenu vide");
 					}
 				}
 			}
@@ -224,7 +225,12 @@ public class G_commentaires {
 	public DefaultTableModel liste() {
 
 		String[] col = {"Id", "Article", "Auteur", "Date", "Contenu"};
-		DefaultTableModel tab = new DefaultTableModel(null, col);
+		DefaultTableModel tab = new DefaultTableModel(null, col){
+			   @Override
+	            public boolean isCellEditable(int row, int column) {
+	                   return false;
+	                }
+		};
 
 		CommentaireDao commDao = new CommentaireDao();
 
@@ -239,7 +245,7 @@ public class G_commentaires {
 		return tab;
 	}
 	public boolean isEmpty(JTextField field) {
-		if(field.getText()==null) {
+		if(field.getText().length()==0) {
 		return true;	
 		}
 		else {return false;}

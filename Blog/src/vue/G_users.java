@@ -23,8 +23,8 @@ import modele.Commentaire;
 import modele.User;
 
 public class G_users {
+	private User user=null;
 	private JPanel content;
-	static User user=null;
 	static String contenu=null;
 	static int user_id=0;
 	
@@ -63,18 +63,6 @@ public class G_users {
 		});
 		contenuhaut.add(articles);
 		
-		/*JButton commentaires = new JButton("Comms");
-		commentaires.setFont(new Font("Agency FB", Font.PLAIN, 15));
-		commentaires.setBounds(290, 5, 90, 25);
-		commentaires.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-						Mainframe.layer.removeAll();
-						G_commentaires art = new G_commentaires();
-						Mainframe.layer.add(art.Commentaires());
-			}
-		});
-		contenuhaut.add(commentaires);*/
-		
 		JPanel contenucentre = new JPanel();
 		contenucentre.setBackground(Color.GRAY);
 		contenucentre.setBounds(0, 40, 465, 290);
@@ -83,7 +71,6 @@ public class G_users {
 
 		JScrollPane scrollg = new JScrollPane();
 		scrollg.setBounds(0, 0, 465, 290);
-		//scrollg.setHorizontalScrollBar(null);
 		contenucentre.add(scrollg);
 		
 		UserDao useDao = new UserDao();
@@ -111,10 +98,6 @@ public class G_users {
 		content.add(contenubas);
 		contenubas.setLayout(null);
 		
-		/*JTextField Fid = new JTextField();
-		Fid.setBounds(0, 5, 40, 15);
-		contenubas.add(Fid);*/
-		
 		JTextField Fnom = new JTextField("nom");
 		Fnom.setBounds(40, 5, 85, 20);
 		contenubas.add(Fnom);
@@ -140,8 +123,8 @@ public class G_users {
 		creer.setBounds(50, 30, 90, 25);
 		creer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (!isEmpty(Fnom) || !isEmpty(Fprenom) || !isEmpty(Femail) || !isEmpty(Ftel) || !isEmpty(Fadmin)) {
-					user = new User(Fnom.getText(), Fprenom.getText(),"", Femail.getText(),
+				if (!isEmpty(Fnom) && !isEmpty(Fprenom) && !isEmpty(Femail) && !isEmpty(Ftel) && !isEmpty(Fadmin)) {
+					user = new User(Fnom.getText(), Fprenom.getText(),"0000", Femail.getText(),
 							Ftel.getText(), false);
 					UserDao useDao = new UserDao();
 					if (useDao.create(user)) {
@@ -154,6 +137,9 @@ public class G_users {
 					else {
 						JOptionPane.showMessageDialog(creer, "User invalide");
 					}
+				}
+				else {
+					JOptionPane.showMessageDialog(creer, "champs vide");
 				}
 			}
 		});
@@ -199,6 +185,9 @@ public class G_users {
 						else {
 							JOptionPane.showMessageDialog(modifier, "User invalide");
 						}
+					}
+					else {
+						JOptionPane.showMessageDialog(modifier, "champs vide");
 					}
 				}
 			}
@@ -259,7 +248,12 @@ public class G_users {
 	public DefaultTableModel liste() {
 
 		String[] col = {"Id", "Nom", "Prenom","Email","Tel","Admin"};
-		DefaultTableModel tab = new DefaultTableModel(null, col);
+		DefaultTableModel tab = new DefaultTableModel(null, col){
+			   @Override
+	            public boolean isCellEditable(int row, int column) {
+	                   return false;
+	                }
+		};
 
 		UserDao useDao = new UserDao();
 
@@ -275,7 +269,7 @@ public class G_users {
 	}
 	
 	public boolean isEmpty(JTextField field) {
-		if(field.getText()==null) {
+		if(field.getText().length()==0) {
 		return true;	
 		}
 		else {return false;}

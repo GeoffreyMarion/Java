@@ -7,20 +7,20 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import controller.CommentaireDao;
+import modele.Article;
 import modele.Commentaire;
+import modele.User;
 
 public class Readart {
-	private 
-	JPanel content;
-	//private JLayeredPane contenucomm;
-	//private JScrollPane comms;
+	private User user=Mainframe.user;
+	private Article article=ListArticles.article;
+	private JPanel content;
 	
 	public JPanel read_art() {
 		content = new JPanel();
@@ -45,14 +45,6 @@ public class Readart {
 		scrollg.add(artText);
 		
 		scrollg.setViewportView(artText);
-		
-		/*contenucomm = new JLayeredPane();
-		contenucomm.setBounds(305, 0, 160, 250);
-		
-		comms = new JScrollPane();
-		comms.setBackground(Color.DARK_GRAY);
-		comms.setBounds(0, 0, 160, 250);
-		contenucomm.add(comms);*/
 		
 		JScrollPane comms = new JScrollPane();
 		comms.setBackground(Color.LIGHT_GRAY);
@@ -89,8 +81,8 @@ public class Readart {
 		poster.setBounds(370, 60, 90, 25);
 		poster.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Commentaire comm = new Commentaire(ListArticles.article.getId(),
-						Mainframe.user.getPrenom() + "" + Mainframe.user.getNom(), Fcomm.getText());
+				Commentaire comm = new Commentaire(article.getId(),
+						user.getPrenom() + "" + user.getNom(), Fcomm.getText());
 				CommentaireDao cDao = new CommentaireDao();
 				if (!isEmpty(Fcomm)) {
 					if (cDao.create(comm)) {
@@ -102,11 +94,12 @@ public class Readart {
 						// comms.removeAll();
 						// coms.add(rart.affiche_comm());
 						Mainframe.layer.add(rart.read_art());
-						Mainframe.Titrepage.setText("Lecture d'article: "+ListArticles.article.getTitre());
+						Mainframe.Titrepage.setText("Lecture d'article: "+article.getTitre());
 					} else {
 						JOptionPane.showMessageDialog(poster, "Commentaire invalide");
 					}
 				}
+				else {JOptionPane.showMessageDialog(poster, "Commentaire vide");}
 			}
 		});
 		contenucentre.add(poster);
@@ -132,39 +125,7 @@ public class Readart {
 		
 		return content;
 	}
-	/*public JScrollPane affiche_comm() {
-		CommentaireDao commDao = new CommentaireDao();
-		ArrayList<Commentaire> listCommentaire = new ArrayList<>();
-		listCommentaire.addAll(commDao.read());
-		
-		for (Commentaire comm : listCommentaire) {
-			
-			JPanel postcomm = new JPanel();
-			postcomm.setBackground(Color.GRAY);
-			comms.add(postcomm);
-			postcomm.setLayout(null);
-			
-			JLabel auteur = new JLabel(comm.getAuteur());
-			auteur.setFont(new Font("Agency FB", Font.PLAIN, 20));
-			auteur.setBounds(5, 5, 70, 25);
-			postcomm.add(auteur);
-			
-			JLabel date = new JLabel(comm.getDate());
-			date.setFont(new Font("Agency FB", Font.PLAIN, 20));
-			date.setBounds(120, 5, 40, 25);
-			postcomm.add(date);
-			
-			JLabel contenu= new JLabel(comm.getDate());
-			contenu.setFont(new Font("Agency FB", Font.PLAIN, 20));
-			contenu.setBounds(5, 30, 160, 25);
-			postcomm.add(contenu);
-			System.out.println("hop");
-			
-			
-			comms.setViewportView(postcomm);
-		}
-		return comms;
-	}*/
+
 	public String affiche_comm() {
 		CommentaireDao commDao = new CommentaireDao();
 		ArrayList<Commentaire> listCommentaire = new ArrayList<>();
@@ -177,7 +138,7 @@ public class Readart {
 		return contenu;
 	}
 	public boolean isEmpty(JTextField field) {
-		if(field.getText()==null) {
+		if(field.getText().length()==0) {
 		return true;	
 		}
 		else {return false;}

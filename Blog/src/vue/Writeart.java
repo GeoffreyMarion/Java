@@ -13,9 +13,11 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import controller.ArticleDao;
 import modele.Article;
+import modele.User;
 
 public class Writeart {
-	static Article article;
+	private Article article=ListArticles.article;
+	private User user=Mainframe.user;
 	private JPanel content;
 	public JPanel write() {
 		content = new JPanel();
@@ -78,9 +80,9 @@ public class Writeart {
 		publier.setBounds(370, 5, 90, 25);
 		publier.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (!isEmpty(Ftitre) || !isEmpty(Fresume) || !isEmptyt(artText)) {
+				if (!isEmpty(Ftitre) && !isEmpty(Fresume) && !isEmptyt(artText)) {
 					article = new Article(Ftitre.getText(), Fresume.getText(), artText.getText(),
-							Mainframe.user.getPrenom() +" "+ Mainframe.user.getNom(), Mainframe.user.getId());
+							user.getPrenom() +" "+ user.getNom(), user.getId());
 					ArticleDao ar = new ArticleDao();
 					if (ar.create(article)) {
 						article.setDate(ar.findDatebyTitre(article.getTitre()));
@@ -89,12 +91,15 @@ public class Writeart {
 						Mainframe.layer.removeAll();
 						ListArticles lart = new ListArticles();
 						Mainframe.layer.add(lart.larticles());
-						Mainframe.Titrepage.setText("Bienvenue " + Mainframe.user.getPrenom() + "");
+						Mainframe.Titrepage.setText("Bienvenue " + user.getPrenom() + "");
 					}
 
 					else {
 						JOptionPane.showMessageDialog(publier, "Article invalide");
 					}
+				}
+				else {
+					JOptionPane.showMessageDialog(publier, "Remplissez les champs pour publier");
 				}
 			}
 		});
@@ -116,13 +121,13 @@ public class Writeart {
 		return content;
 	}
 	public boolean isEmpty(JTextField field) {
-		if(field.getText()==null) {
+		if(field.getText().length()==0) {
 		return true;	
 		}
 		else {return false;}
 	}
 	public boolean isEmptyt(JTextArea tarea) {
-		if(tarea.getText()==null) {
+		if(tarea.getText().length()==0) {
 		return true;	
 		}
 		else {return false;}
