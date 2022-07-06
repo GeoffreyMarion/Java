@@ -23,7 +23,6 @@
     <fullyQualifiedTypeName name="java.awt.Dimension"/>
     <fullyQualifiedTypeName name="DAO.iDAO"/>
     <fullyQualifiedTypeName name="DAO.Database"/>
-    <fullyQualifiedTypeName name="modele.User"/>
     <fullyQualifiedTypeName name="javax.swing.JScrollBar"/>
     <fullyQualifiedTypeName name="javax.swing.JButton"/>
     <fullyQualifiedTypeName name="java.awt.event.ActionListener"/>
@@ -42,9 +41,15 @@
     <fullyQualifiedTypeName name="java.awt.event.MouseEvent"/>
     <fullyQualifiedTypeName name="javax.swing.table.DefaultTableModel"/>
     <fullyQualifiedTypeName name="java.util.ArrayList"/>
-    <fullyQualifiedTypeName name="modele.Article"/>
     <fullyQualifiedTypeName name="javax.swing.JTextArea"/>
     <fullyQualifiedTypeName name="modele.Commentaire"/>
     <fullyQualifiedTypeName name="controller.CommentaireDao"/>
+    <fullyQualifiedTypeName name="modele.Article"/>
+    <fullyQualifiedTypeName name="modele.User"/>
+    <fullyQualifiedTypeName name="java.util.regex.Pattern"/>
+    <fullyQualifiedTypeName name="java.util.regex.Matcher"/>
     <fullyQualifiedTypeName name="java.util.Date"/>
+    <fullyQualifiedTypeName name="modele.Conducteur"/>
+    <fullyQualifiedTypeName name="modele.Vehicule"/>
+    <fullyQualifiedTypeName name="modele.Association"/>
 </qualifiedTypeNameHistroy>

@@ -34,14 +34,14 @@ public class Mainframe extends JFrame {
 		        return matcher.find();
 		}
 	
-		public static final Pattern VALID_PRE_NOM_REGEX = Pattern.compile("^[a-zA-Z ]*$", Pattern.CASE_INSENSITIVE);
+		public static final Pattern VALID_PRE_NOM_REGEX = Pattern.compile("^[a-zA-Z \\-\\.\\']*$", Pattern.CASE_INSENSITIVE);
 
 		public static boolean validnom(String pre_nom) {
 			Matcher matcher = VALID_PRE_NOM_REGEX.matcher(pre_nom);
 			return matcher.find();
 		}
 
-		public static final Pattern VALID_Num_REGEX = Pattern.compile("^[0-9]{10}$", Pattern.CASE_INSENSITIVE);
+		public static final Pattern VALID_Num_REGEX = Pattern.compile("^0+[0-9]{9}$", Pattern.CASE_INSENSITIVE);
 
 		public static boolean validtel(String tel) {
 			Matcher matcher = VALID_Num_REGEX.matcher(tel);
@@ -249,23 +249,36 @@ public class Mainframe extends JFrame {
 				user = new User(Fnom.getText(), Fprenom.getText(), String.valueOf(Fpassword.getPassword()),
 						Femail.getText(), Ftel.getText(), false);
 				if (!isEmpty(Fnom) && !isEmpty(Fprenom) && !isEmpty(Fpassword) && !isEmpty(Femail) && !isEmpty(Ftel)) {
-					System.out.println();
-					if (uDao.findByEmail(Femail.getText()) == null && validmail(Femail.getText()) && validnom(Fnom.getText()) && validnom(Fprenom.getText())  && validtel(Ftel.getText())) {
-						if (uDao.create(user)) {
-							JOptionPane.showMessageDialog(inscription, "Inscription ok");
-							user.setId(uDao.idbymail(user.getEmail()));
-							Fcmail.setText(Femail.getText());
-						} else {
-							JOptionPane.showMessageDialog(inscription, "Inscription echec");
+					if (validmail(Femail.getText()) && validnom(Fnom.getText()) && validnom(Fprenom.getText())
+							&& validtel(Ftel.getText())) {
+						if (uDao.findByEmail(Femail.getText()) == null) {
+							if (uDao.create(user)) {
+								JOptionPane.showMessageDialog(inscription, "Inscription ok");
+								user.setId(uDao.idbymail(user.getEmail()));
+								Fcmail.setText(Femail.getText());
+							} else {
+								JOptionPane.showMessageDialog(inscription, "Inscription echec");
+							}
+						}
+						else {
+							JOptionPane.showMessageDialog(inscription, "Email déjà utilisé");
 						}
 					}
-					if(!validnom(Fnom.getText())){JOptionPane.showMessageDialog(inscription, "Nom invalde");}
-					if(!validnom(Fprenom.getText())){JOptionPane.showMessageDialog(inscription, "Prenom invalde");}
-					if(uDao.findByEmail(Femail.getText()) != null) {JOptionPane.showMessageDialog(inscription, "email déja utilisé");}
-					if(!validmail(Femail.getText())){JOptionPane.showMessageDialog(inscription, "email invalde");}
-					if(!validtel(Ftel.getText())){JOptionPane.showMessageDialog(inscription, "Téléphone invalde");}
+					if (!validnom(Fnom.getText())) {
+						JOptionPane.showMessageDialog(inscription, "Nom invalde");
+					}
+					if (!validnom(Fprenom.getText())) {
+						JOptionPane.showMessageDialog(inscription, "Prenom invalde");
+					}
+					if (!validmail(Femail.getText())) {
+						JOptionPane.showMessageDialog(inscription, "email invalde");
+					}
+					if (!validtel(Ftel.getText())) {
+						JOptionPane.showMessageDialog(inscription, "Téléphone invalde");
+					}
+				} else {
+					JOptionPane.showMessageDialog(inscription, "Remplissez tous les champs");
 				}
-				else {JOptionPane.showMessageDialog(inscription, "Remplissez tous les champs");}
 			}
 		});
 		contenudroite.add(inscription);

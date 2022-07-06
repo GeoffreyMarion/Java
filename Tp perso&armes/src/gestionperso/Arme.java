@@ -73,25 +73,25 @@ public class Arme{
 			break;
 		}
 	}
-	public void desarmer() {
+	public void desarmer(Joueur joueur) {
 		int rand= rf.nextInt(10-1) + 1;
 		if (rand==10) {
-			ennemi.arme.typea=désarmé;
+			joueur.arme.typea=désarmé;
 		}
 	}
-	public void assomer() {
+	public void assomer(Joueur joueur) {
 		int rand= rf.nextInt(10-1) + 1;
 		if (rand==10) {
-			ennemi.force-=1;
+			joueur.force-=1;
 		}
 	}
-	public void percer() {
+	public void percer(Joueur joueur) {
 		int rand= rf.nextInt(10-1) + 1;
 		if (rand==10) {
-			ennemi.defense-=1;
+			joueur.defense-=1;
 		}
 	}
-	public void critique() {
+	public void critique(Joueur joueur) {
 		int rand= rf.nextInt(10-1) + 1;
 		if (rand==10) {
 			wound+=1;
